@@ -1,6 +1,16 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, Blocks, Code2, Play, RotateCcw, Sparkles, Trash2 } from 'lucide-react'
+import {
+  ArrowLeft,
+  Blocks,
+  Check,
+  Code2,
+  Copy,
+  Play,
+  RotateCcw,
+  Sparkles,
+  Trash2,
+} from 'lucide-react'
 import { useLanguage } from '../i18n/LanguageProvider'
 import {
   MicrobitBlocklyWorkspace,
@@ -8,6 +18,8 @@ import {
   type MicrobitPreview,
 } from '../components/MicrobitBlocklyWorkspace'
 import { MicrobitBoard } from '../components/MicrobitBoard'
+
+type CodeMode = 'python' | 'javascript'
 
 type Module = {
   number: number
@@ -26,69 +38,132 @@ const MODULES: Module[] = [
     number: 1,
     titleEs: 'Conoce tu micro:bit',
     titleEn: 'Meet your micro:bit',
-    introEs: 'La micro:bit es una pequeña computadora con 25 LEDs, botones, sensores y pines para conectar componentes.',
-    introEn: 'The micro:bit is a tiny computer with 25 LEDs, buttons, sensors and pins for external components.',
-    missionEs: 'Arrastra un bloque para mostrar un mensaje de bienvenida y ejecútalo.',
-    missionEn: 'Drag a block that shows a welcome message and run it.',
-    tipEs: 'Abre la categoría Pantalla, arrastra “mostrar texto” y cambia el texto por lo que quieras.',
-    tipEn: 'Open Display, drag “show text”, then change the text to anything you like.',
+    introEs: 'Conoce la placa, su matriz LED, botones, sensores y pines mientras construyes tu primer programa.',
+    introEn: 'Meet the board, LED matrix, buttons, sensors and pins while building your first program.',
+    missionEs: 'Muestra un mensaje de bienvenida en la matriz LED.',
+    missionEn: 'Show a welcome message on the LED matrix.',
+    tipEs: 'Abre Básico, arrastra “mostrar texto” y cambia el contenido.',
+    tipEn: 'Open Basic, drag “show text”, and change its content.',
   },
   {
     number: 2,
     titleEs: 'Matriz LED',
     titleEn: 'LED matrix',
-    introEs: 'La pantalla tiene una matriz de 5 × 5 LEDs. Puedes mostrar iconos, texto y secuencias sin conectar nada extra.',
-    introEn: 'The display has a 5 × 5 LED matrix. You can show icons, text and sequences without extra hardware.',
-    missionEs: 'Crea una secuencia: corazón → esperar 1000 ms → cara feliz.',
-    missionEn: 'Create a sequence: heart → wait 1000 ms → smile.',
-    tipEs: 'Encaja los bloques uno debajo de otro. El orden de arriba hacia abajo será el orden del programa.',
-    tipEn: 'Snap blocks together vertically. Top-to-bottom order becomes program order.',
+    introEs: 'Programa la matriz de 25 LEDs para mostrar iconos, texto y pequeñas secuencias.',
+    introEn: 'Program the 25 LED matrix to show icons, text and small sequences.',
+    missionEs: 'Crea: corazón → esperar 1000 ms → cara feliz.',
+    missionEn: 'Create: heart → wait 1000 ms → smile.',
+    tipEs: 'Encaja los bloques verticalmente. Ese orden será el orden del programa.',
+    tipEn: 'Snap blocks vertically. That becomes the program order.',
   },
   {
     number: 3,
     titleEs: 'Botones A y B',
     titleEn: 'Buttons A and B',
-    introEs: 'Los botones son entradas. Ahora tu programa puede reaccionar a lo que hace una persona.',
-    introEn: 'Buttons are inputs. Your program can now react to what a person does.',
-    missionEs: 'Haz que al presionar A se muestre un corazón.',
-    missionEn: 'Make button A show a heart.',
-    tipEs: 'Arrastra “si botón A está presionado” y mete dentro el bloque “mostrar corazón”. Luego ejecuta y pulsa A en la micro:bit simulada.',
-    tipEn: 'Drag “if button A is pressed”, place “show heart” inside it, run, then click A on the simulated micro:bit.',
+    introEs: 'Convierte los botones físicos en eventos para que tu proyecto responda a una persona.',
+    introEn: 'Turn the physical buttons into events so your project can respond to a person.',
+    missionEs: 'Haz que al presionar A aparezca un corazón.',
+    missionEn: 'Make a heart appear when A is pressed.',
+    tipEs: 'Pon “mostrar corazón” dentro del bloque del botón A y después pulsa A en el simulador.',
+    tipEn: 'Place “show heart” inside button A, then click A on the simulator.',
   },
   {
     number: 4,
     titleEs: 'Pines y señales',
     titleEn: 'Pins and signals',
-    introEs: 'P0, P1 y P2 pueden enviar o recibir señales. Así puedes controlar LEDs externos, sensores y actuadores.',
-    introEn: 'P0, P1 and P2 can send or receive signals for external LEDs, sensors and actuators.',
+    introEs: 'Usa P0, P1 y P2 para enviar señales y comenzar a controlar componentes externos.',
+    introEn: 'Use P0, P1 and P2 to send signals and start controlling external components.',
     missionEs: 'Enciende P1, espera un segundo y apágalo.',
     missionEn: 'Turn P1 on, wait one second, then turn it off.',
-    tipEs: 'Usa dos bloques “poner pin P1” con un bloque de espera entre ellos. El pin activo se ilumina en la placa.',
-    tipEn: 'Use two “set pin P1” blocks with a wait block between them. The active pin lights up on the board.',
+    tipEs: 'Usa dos bloques de pin y deja un bloque de espera entre ambos.',
+    tipEn: 'Use two pin blocks with a wait block between them.',
   },
   {
     number: 5,
     titleEs: 'Sensores',
     titleEn: 'Sensors',
-    introEs: 'La micro:bit puede medir temperatura, luz y movimiento. Esos datos permiten que tus proyectos reaccionen al mundo real.',
-    introEn: 'The micro:bit can measure temperature, light and movement, allowing projects to react to the real world.',
+    introEs: 'Usa temperatura, luz y movimiento para que tus programas entiendan lo que sucede alrededor.',
+    introEn: 'Use temperature, light and movement so programs understand what is happening around them.',
     missionEs: 'Muestra la temperatura y después el nivel de luz.',
     missionEn: 'Show temperature and then light level.',
-    tipEs: 'Abre Sensores y conecta dos bloques. El MicroPython se genera automáticamente.',
-    tipEn: 'Open Sensors and connect two blocks. MicroPython is generated automatically.',
+    tipEs: 'Conecta dos bloques de sensores. El código se actualiza automáticamente.',
+    tipEn: 'Connect two sensor blocks. The code updates automatically.',
   },
   {
     number: 6,
     titleEs: 'Mueve un servo',
     titleEn: 'Move a servo',
-    introEs: 'Un servomotor necesita alimentación adecuada y una señal de control. Aquí generamos esa señal desde P1.',
-    introEn: 'A servo needs proper power and a control signal. Here we generate that signal from P1.',
-    missionEs: 'Mueve el servo a 0°, espera un segundo y llévalo a 90°.',
+    introEs: 'Controla un servomotor desde P1 y relaciona los bloques con el movimiento de hardware real.',
+    introEn: 'Control a servo from P1 and connect visual blocks with real hardware movement.',
+    missionEs: 'Lleva el servo a 0°, espera un segundo y después muévelo a 90°.',
     missionEn: 'Move the servo to 0°, wait one second, then move it to 90°.',
-    tipEs: 'La señal sale por P1. Para hardware real, alimenta el servo aparte y comparte GND con la micro:bit.',
-    tipEn: 'The signal comes from P1. For real hardware, power the servo separately and share GND with the micro:bit.',
+    tipEs: 'En hardware real, alimenta el servo aparte y comparte GND con la micro:bit.',
+    tipEn: 'On real hardware, power the servo separately and share GND with the micro:bit.',
   },
 ]
+
+function CodePanel({
+  mode,
+  setMode,
+  pythonCode,
+  javascriptCode,
+  spanish,
+}: {
+  mode: CodeMode
+  setMode: (mode: CodeMode) => void
+  pythonCode: string
+  javascriptCode: string
+  spanish: boolean
+}) {
+  const [copied, setCopied] = useState(false)
+  const activeCode = mode === 'python' ? pythonCode : javascriptCode
+
+  const copy = async () => {
+    await navigator.clipboard?.writeText(activeCode)
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 1200)
+  }
+
+  return (
+    <section className="overflow-hidden rounded-2xl border border-[#d8e4f5] bg-white shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e5edf8] px-4 py-3">
+        <div className="flex items-center gap-2 font-black text-[#163567]">
+          <Code2 size={18} className="text-[#2563eb]" />
+          {spanish ? 'Código generado' : 'Generated code'}
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex rounded-xl bg-[#eef4ff] p-1">
+            <button
+              type="button"
+              onClick={() => setMode('python')}
+              className={`rounded-lg px-3 py-1.5 text-xs font-black transition ${mode === 'python' ? 'bg-white text-[#2563eb] shadow-sm' : 'text-[#6d7f9e]'}`}
+            >
+              Python
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('javascript')}
+              className={`rounded-lg px-3 py-1.5 text-xs font-black transition ${mode === 'javascript' ? 'bg-white text-[#2563eb] shadow-sm' : 'text-[#6d7f9e]'}`}
+            >
+              JavaScript
+            </button>
+          </div>
+          <button
+            type="button"
+            onClick={copy}
+            className="inline-flex items-center gap-2 rounded-xl border border-[#d8e4f5] bg-white px-3 py-2 text-xs font-bold text-[#35527d] hover:bg-[#f7faff]"
+          >
+            {copied ? <Check size={15} className="text-emerald-500" /> : <Copy size={15} />}
+            {copied ? (spanish ? 'Copiado' : 'Copied') : (spanish ? 'Copiar' : 'Copy')}
+          </button>
+        </div>
+      </div>
+      <pre className="max-h-[260px] min-h-[190px] overflow-auto bg-[#fbfdff] p-4 text-[12px] leading-6 text-[#27436e]">
+        <code>{activeCode}</code>
+      </pre>
+    </section>
+  )
+}
 
 export function MakerMicrobitLesson() {
   const { moduleNumber } = useParams<{ moduleNumber: string }>()
@@ -98,14 +173,27 @@ export function MakerMicrobitLesson() {
   const module = MODULES.find(item => item.number === Number(moduleNumber)) ?? MODULES[1]
   const workspaceRef = useRef<MicrobitBlocklyHandle>(null)
 
-  const [code, setCode] = useState('from microbit import *\n\n# Arrastra bloques al área de trabajo\n')
+  const [pythonCode, setPythonCode] = useState('from microbit import *\n\n# Arrastra bloques al área de trabajo\n')
+  const [javascriptCode, setJavascriptCode] = useState('// Arrastra bloques al área de trabajo\n')
+  const [codeMode, setCodeMode] = useState<CodeMode>('python')
   const [blockCount, setBlockCount] = useState(0)
   const [preview, setPreview] = useState<MicrobitPreview>('blank')
   const [simulatedPreview, setSimulatedPreview] = useState<MicrobitPreview>('blank')
   const [ran, setRan] = useState(false)
 
-  const handleWorkspaceChange = (nextCode: string, count: number, nextPreview: MicrobitPreview) => {
-    setCode(nextCode)
+  const projectStatus = useMemo(() => {
+    if (!ran) return spanish ? 'Listo para probar' : 'Ready to test'
+    return spanish ? 'Simulación activa' : 'Simulation running'
+  }, [ran, spanish])
+
+  const handleWorkspaceChange = (
+    nextPython: string,
+    nextJavascript: string,
+    count: number,
+    nextPreview: MicrobitPreview,
+  ) => {
+    setPythonCode(nextPython)
+    setJavascriptCode(nextJavascript)
     setBlockCount(count)
     setPreview(nextPreview)
     setRan(false)
@@ -122,129 +210,175 @@ export function MakerMicrobitLesson() {
     setRan(true)
   }
 
-  const resetSimulation = () => {
-    setRan(false)
-    setSimulatedPreview('blank')
-  }
-
   return (
-    <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-7 text-white">
-      <button
-        onClick={() => navigate('/app/blocks')}
-        className="inline-flex items-center gap-2 text-white/55 hover:text-white mb-5 font-bold"
-      >
-        <ArrowLeft size={18} /> {spanish ? 'Volver a Maker Lab' : 'Back to Maker Lab'}
-      </button>
-
-      <div className="rounded-3xl border border-cyan-400/20 bg-gradient-to-r from-cyan-950/40 to-violet-950/40 p-6 sm:p-8 mb-6">
-        <div className="text-xs font-black tracking-[.16em] text-cyan-300 mb-2">
-          MICRO:BIT · {spanish ? 'MÓDULO' : 'MODULE'} {module.number}
-        </div>
-        <h1 className="text-3xl sm:text-5xl font-black mb-3">{spanish ? module.titleEs : module.titleEn}</h1>
-        <p className="text-white/60 max-w-3xl leading-relaxed mb-4">{spanish ? module.introEs : module.introEn}</p>
-        <div className="inline-flex items-start gap-2 rounded-2xl border border-amber-400/20 bg-amber-400/[0.06] px-4 py-3 text-amber-100/85">
-          <Sparkles size={18} className="mt-0.5 shrink-0" />
-          <span><strong>{spanish ? 'Misión:' : 'Mission:'}</strong> {spanish ? module.missionEs : module.missionEn}</span>
-        </div>
-      </div>
-
-      <div className="grid 2xl:grid-cols-[minmax(0,1fr)_560px] gap-5 items-start">
-        <section className="rounded-3xl border border-white/10 bg-[#0c0918]/90 overflow-hidden">
-          <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-white/10 bg-[#120d27]/85">
-            <div>
-              <div className="flex items-center gap-2 font-black">
-                <Blocks size={19} className="text-cyan-300" />
-                {spanish ? 'Editor de bloques' : 'Block editor'}
+    <div className="min-h-screen bg-[#eef5ff] px-3 py-4 text-[#17305f] sm:px-5 lg:px-6">
+      <div className="mx-auto max-w-[1780px]">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#d6e3f7] bg-white px-4 py-3 shadow-sm">
+          <div className="flex min-w-0 items-center gap-3">
+            <button
+              type="button"
+              onClick={() => navigate('/app/blocks')}
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#edf4ff] text-[#2b5fb8] hover:bg-[#e4eeff]"
+              title={spanish ? 'Volver a Maker Lab' : 'Back to Maker Lab'}
+            >
+              <ArrowLeft size={19} />
+            </button>
+            <div className="min-w-0">
+              <div className="truncate text-lg font-black text-[#12346b]">Mini Maker Labs</div>
+              <div className="truncate text-xs font-bold text-[#7386a7]">
+                Maker Lab · micro:bit · {spanish ? 'Módulo' : 'Module'} {module.number}: {spanish ? module.titleEs : module.titleEn}
               </div>
-              <div className="text-xs text-white/35 mt-1">
-                {blockCount} {spanish ? (blockCount === 1 ? 'bloque' : 'bloques') : (blockCount === 1 ? 'block' : 'blocks')}
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={clear}
-                className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-white/10 bg-white/5 text-sm font-bold text-white/60 hover:text-white"
-              >
-                <Trash2 size={15} /> {spanish ? 'Limpiar' : 'Clear'}
-              </button>
-              <button
-                onClick={run}
-                disabled={!blockCount}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 disabled:opacity-30 text-sm font-black text-slate-950"
-              >
-                <Play size={15} fill="currentColor" /> {spanish ? 'Ejecutar' : 'Run'}
-              </button>
             </div>
           </div>
 
-          <MicrobitBlocklyWorkspace
-            ref={workspaceRef}
-            moduleNumber={module.number}
-            language={language}
-            onChange={handleWorkspaceChange}
-          />
-
-          <div className="px-5 py-4 border-t border-white/10 bg-cyan-400/[0.035] text-sm text-white/55">
-            <strong className="text-cyan-200">{spanish ? 'Pista:' : 'Tip:'}</strong>{' '}
-            {spanish ? module.tipEs : module.tipEn}
-          </div>
-        </section>
-
-        <section className="space-y-5 2xl:sticky 2xl:top-24">
-          <div className="rounded-3xl border border-white/10 bg-[#120d27]/85 p-5">
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <div>
-                <div className="font-black text-lg">{spanish ? 'micro:bit simulada' : 'Simulated micro:bit'}</div>
-                <div className="text-xs text-white/35 mt-1">LED 5×5 · A/B · P0/P1/P2 · sensores</div>
-              </div>
-              <button
-                onClick={resetSimulation}
-                className="p-2 rounded-xl border border-white/10 bg-white/5 text-white/50 hover:text-white"
-                title={spanish ? 'Reiniciar simulador' : 'Reset simulator'}
-              >
-                <RotateCcw size={17} />
-              </button>
+          <div className="hidden rounded-2xl bg-[#eef3ff] p-1 md:flex">
+            <div className="inline-flex items-center gap-2 rounded-xl bg-[#5b46f6] px-5 py-2 text-sm font-black text-white shadow-sm">
+              <Blocks size={17} /> {spanish ? 'Bloques' : 'Blocks'}
             </div>
+            <button
+              type="button"
+              onClick={() => setCodeMode('python')}
+              className="px-4 py-2 text-sm font-black text-[#254878]"
+            >
+              Python
+            </button>
+            <button
+              type="button"
+              onClick={() => setCodeMode('javascript')}
+              className="px-4 py-2 text-sm font-black text-[#254878]"
+            >
+              JS
+            </button>
+          </div>
 
-            <MicrobitBoard
-              preview={ran ? simulatedPreview : 'blank'}
-              code={code}
-              running={ran}
-              language={language}
+          <button
+            type="button"
+            onClick={run}
+            disabled={!blockCount}
+            className="inline-flex items-center gap-2 rounded-xl bg-[#1475ee] px-5 py-2.5 text-sm font-black text-white shadow-[0_8px_20px_rgba(37,99,235,.18)] disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <Play size={17} fill="currentColor" /> {spanish ? 'Probar' : 'Run'}
+          </button>
+        </div>
+
+        <div className="grid gap-3 xl:grid-cols-[420px_minmax(0,1fr)]">
+          <aside className="space-y-3">
+            <section className="rounded-2xl border border-[#d8e4f5] bg-white p-4 shadow-sm">
+              <div className="mb-3 flex items-center justify-between">
+                <div>
+                  <div className="text-lg font-black text-[#163567]">{spanish ? 'Simulador' : 'Simulator'}</div>
+                  <div className="text-xs font-bold text-[#8191ac]">micro:bit + hardware</div>
+                </div>
+                <span className={`rounded-full px-3 py-1 text-[11px] font-black ${ran ? 'bg-emerald-50 text-emerald-700' : 'bg-[#eef4ff] text-[#50709e]'}`}>
+                  {projectStatus}
+                </span>
+              </div>
+
+              <div className="rounded-2xl bg-[#f8fbff] p-2">
+                <MicrobitBoard
+                  preview={ran ? simulatedPreview : 'blank'}
+                  code={pythonCode}
+                  running={ran}
+                  language={language}
+                />
+              </div>
+
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={run}
+                  disabled={!blockCount}
+                  className="inline-flex flex-col items-center justify-center gap-1 rounded-xl bg-emerald-50 px-2 py-3 text-xs font-black text-emerald-700 disabled:opacity-40"
+                >
+                  <Play size={18} /> {spanish ? 'Iniciar' : 'Start'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setRan(false); setSimulatedPreview('blank') }}
+                  className="inline-flex flex-col items-center justify-center gap-1 rounded-xl bg-[#f2f6fc] px-2 py-3 text-xs font-black text-[#506b91]"
+                >
+                  <RotateCcw size={18} /> {spanish ? 'Reiniciar' : 'Reset'}
+                </button>
+                <button
+                  type="button"
+                  onClick={clear}
+                  className="inline-flex flex-col items-center justify-center gap-1 rounded-xl bg-rose-50 px-2 py-3 text-xs font-black text-rose-600"
+                >
+                  <Trash2 size={18} /> {spanish ? 'Limpiar' : 'Clear'}
+                </button>
+              </div>
+            </section>
+
+            <section className="rounded-2xl border border-[#d8e4f5] bg-white p-4 shadow-sm">
+              <div className="mb-2 text-xs font-black uppercase tracking-[.14em] text-[#7f91ad]">
+                {spanish ? 'Misión' : 'Mission'}
+              </div>
+              <div className="mb-3 flex items-start gap-2 text-sm font-bold leading-6 text-[#27466f]">
+                <Sparkles size={17} className="mt-1 shrink-0 text-amber-500" />
+                <span>{spanish ? module.missionEs : module.missionEn}</span>
+              </div>
+              <div className="rounded-xl bg-[#eef5ff] p-3 text-xs leading-5 text-[#557197]">
+                <strong className="text-[#2f5fa1]">{spanish ? 'Pista:' : 'Tip:'}</strong>{' '}
+                {spanish ? module.tipEs : module.tipEn}
+              </div>
+            </section>
+          </aside>
+
+          <main className="min-w-0 space-y-3">
+            <section className="overflow-hidden rounded-2xl border border-[#d8e4f5] bg-white shadow-sm">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e5edf8] px-4 py-3">
+                <div>
+                  <div className="flex items-center gap-2 font-black text-[#163567]">
+                    <Blocks size={18} className="text-[#2563eb]" /> {spanish ? 'Programa' : 'Program'}
+                  </div>
+                  <div className="mt-0.5 text-xs font-bold text-[#8a9ab4]">
+                    {blockCount} {spanish ? (blockCount === 1 ? 'bloque' : 'bloques') : (blockCount === 1 ? 'block' : 'blocks')}
+                  </div>
+                </div>
+                <div className="max-w-[680px] text-right text-xs font-semibold text-[#8191ac]">
+                  {spanish ? module.introEs : module.introEn}
+                </div>
+              </div>
+
+              <MicrobitBlocklyWorkspace
+                ref={workspaceRef}
+                moduleNumber={module.number}
+                language={language}
+                onChange={handleWorkspaceChange}
+              />
+            </section>
+
+            <CodePanel
+              mode={codeMode}
+              setMode={setCodeMode}
+              pythonCode={pythonCode}
+              javascriptCode={javascriptCode}
+              spanish={spanish}
             />
-          </div>
+          </main>
+        </div>
 
-          <div className="rounded-3xl border border-white/10 bg-[#120d27]/85 p-5">
-            <div className="flex items-center gap-2 font-black mb-4">
-              <Code2 size={19} className="text-violet-300" /> MicroPython
-            </div>
-            <pre className="rounded-2xl bg-black/50 border border-white/10 p-4 text-xs sm:text-sm text-emerald-200 overflow-x-auto whitespace-pre-wrap min-h-[220px] max-h-[320px] overflow-y-auto">
-              <code>{code}</code>
-            </pre>
-            <p className="text-xs text-white/30 mt-3">
-              {spanish
-                ? 'El código cambia en tiempo real mientras mueves, conectas o editas bloques.'
-                : 'The code updates live while you move, connect or edit blocks.'}
-            </p>
+        <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl border border-[#d8e4f5] bg-white px-4 py-3 shadow-sm">
+          <button
+            type="button"
+            disabled={module.number <= 1}
+            onClick={() => navigate(`/app/blocks/microbit/${module.number - 1}`)}
+            className="rounded-xl border border-[#d8e4f5] px-4 py-2 text-sm font-black text-[#48678f] disabled:opacity-30"
+          >
+            ← {spanish ? 'Anterior' : 'Previous'}
+          </button>
+          <div className="hidden text-xs font-bold text-[#91a0b8] sm:block">
+            {spanish ? 'Bloques visuales → código → hardware' : 'Visual blocks → code → hardware'}
           </div>
-        </section>
-      </div>
-
-      <div className="mt-6 flex justify-between gap-3">
-        <button
-          disabled={module.number <= 1}
-          onClick={() => navigate(`/app/blocks/microbit/${module.number - 1}`)}
-          className="px-5 py-3 rounded-xl border border-white/10 bg-white/5 font-bold disabled:opacity-25"
-        >
-          ← {spanish ? 'Anterior' : 'Previous'}
-        </button>
-        <button
-          disabled={module.number >= 6}
-          onClick={() => navigate(`/app/blocks/microbit/${module.number + 1}`)}
-          className="px-5 py-3 rounded-xl bg-cyan-500 text-slate-950 font-black disabled:opacity-25"
-        >
-          {spanish ? 'Siguiente módulo' : 'Next module'} →
-        </button>
+          <button
+            type="button"
+            disabled={module.number >= 6}
+            onClick={() => navigate(`/app/blocks/microbit/${module.number + 1}`)}
+            className="rounded-xl bg-[#2563eb] px-4 py-2 text-sm font-black text-white disabled:opacity-30"
+          >
+            {spanish ? 'Siguiente módulo' : 'Next module'} →
+          </button>
+        </div>
       </div>
     </div>
   )
