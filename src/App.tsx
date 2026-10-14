@@ -5,6 +5,7 @@ import { LanguageUrlSync } from './i18n/LanguageUrlSync'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { BlocksHome } from './screens/BlocksHome'
+import { MakerLabHome } from './screens/MakerLabHome'
 import { LessonScreen } from './screens/LessonScreen'
 import { LandingScreen } from './screens/LandingScreen'
 import { PathSelector } from './screens/PathSelector'
@@ -58,11 +59,10 @@ function GameLayout() {
   )
 }
 
-// ── Blocks path routes ────────────────────────────────────────
+// ── Maker Lab / blocks routes ─────────────────────────────────
 
 function WorldMapRoute() {
-  const { getLessonProgress, isLessonUnlocked } = useProgress()
-  return <BlocksHome getLessonProgress={getLessonProgress} isLessonUnlocked={isLessonUnlocked} />
+  return <MakerLabHome />
 }
 
 function WorldDetailRoute() {
@@ -86,7 +86,6 @@ function LessonRoute() {
   const lesson = worldId && lessonNumber ? getLessonByNumber(worldId, Number(lessonNumber)) : null
   const world = worldId ? getWorld(worldId) : null
 
-  // INV-L2 — the blocks path has no lock; any existing world+lesson pair is accessible.
   if (!lesson || !world) {
     return <Navigate to="/app/blocks" replace />
   }
@@ -115,8 +114,6 @@ function LessonRoute() {
     />
   )
 }
-
-// ── Thinking path routes ──────────────────────────────────────
 
 function ThinkingWorldRoute() {
   const { worldId } = useParams<{ worldId: string }>()
@@ -157,8 +154,6 @@ function ThinkingLessonRoute() {
   )
 }
 
-// ── Safety path routes ────────────────────────────────────────
-
 function SafetyWorldRoute() {
   const { worldId } = useParams<{ worldId: string }>()
   const { isWorldUnlocked } = useProgress()
@@ -198,8 +193,6 @@ function SafetyLessonRoute() {
   )
 }
 
-// ── Landing ───────────────────────────────────────────────────
-
 function LandingRoute() {
   const navigate = useNavigate()
   const { progress } = useProgress()
@@ -222,26 +215,17 @@ function PathSelectorRoute() {
   return <PathSelector progress={progress} />
 }
 
-// ── Not found ─────────────────────────────────────────────────
-
 function NotFoundRoute() {
   return <NotFoundScreen />
 }
 
-// ── App ───────────────────────────────────────────────────────
-
 interface AppProps {
-  /**
-   * True only when hydrating prerendered markup (the `/` landing page, built by
-   * `src/entry-server.tsx`). Every other mount — `/app/*`, `bun run dev` — lands on an
-   * empty `#root` and leaves this unset. See `main.tsx`.
-   */
   isHydrating?: boolean
 }
 
 export default function App({ isHydrating }: AppProps) {
   return (
-    <LanguageProvider forcedInitialLanguage={isHydrating ? 'en' : undefined}>
+    <LanguageProvider forcedInitialLanguage={isHydrating ? 'id' : undefined}>
       <LanguageUrlSync />
       <Routes>
         <Route path="/" element={<LandingRoute />} />
