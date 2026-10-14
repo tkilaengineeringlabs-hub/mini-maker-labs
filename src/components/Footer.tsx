@@ -9,8 +9,8 @@ function formatBuildDate(iso: string): string {
 
 export function Footer() {
   return (
-    <footer className="py-8 px-5 border-t border-white/[0.06] text-center">
-      <div className="max-w-2xl mx-auto space-y-1 text-white/40 text-xs">
+    <footer className="border-t border-[#d8e5f7] bg-white/75 px-5 py-8 text-center">
+      <div className="mx-auto max-w-2xl space-y-1 text-xs text-[#7b8fae]">
         <p>© {START_YEAR}–presente Mini Maker Labs</p>
         <p>Actualizado {formatBuildDate(__BUILD_DATE__)}</p>
         {__COMMIT_SHA__ && (
@@ -19,7 +19,7 @@ export function Footer() {
               href={`${REPO_URL}/commit/${__COMMIT_SHA__}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-white/70 transition-colors"
+              className="transition-colors hover:text-[#153d73]"
             >
               {__COMMIT_SHA__}
             </a>
@@ -28,13 +28,13 @@ export function Footer() {
               href={REPO_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-white/70 transition-colors"
+              className="transition-colors hover:text-[#153d73]"
             >
               Código fuente
             </a>
           </p>
         )}
-        <div className="pt-3 text-white/30">
+        <div className="pt-3 font-semibold text-[#97a8c0]">
           Aprende · Construye · Programa · Experimenta
         </div>
       </div>
