@@ -29,7 +29,7 @@ function GameLayout() {
   const isHub = useLocation().pathname.replace(/\/$/, '') === '/app'
 
   return (
-    <div className={`min-h-screen font-nunito ${isHub ? 'bg-[#F5F9FD] text-[#0F2F57]' : 'bg-[#0A0618]'}`}>
+    <div className={`min-h-screen font-nunito ${isHub ? 'bg-[#F7FCFD] text-[#173644]' : 'bg-[#0A0618]'}`}>
       {!isHub && <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-1/4 w-80 h-80 bg-pink-600/8 rounded-full blur-3xl" />
@@ -56,7 +56,7 @@ function GameLayout() {
       <main className="relative z-10">
         <Outlet />
       </main>
-      {isHub ? <div className="bg-[#0F2F57]"><Footer /></div> : <Footer />}
+      {isHub ? <div className="bg-[#173644]"><Footer /></div> : <Footer />}
     </div>
   )
 }

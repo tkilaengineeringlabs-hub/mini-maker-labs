@@ -1,0 +1,32 @@
+@font-face {
+  font-family: 'MiniMakerHubPixel';
+  src: url('../assets/landing/Silkscreen-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MiniMakerHubHand';
+  src: url('../assets/landing/Caveat.ttf') format('truetype');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.hub h1,
+.hub h2 {
+  font-family: 'MiniMakerHubPixel', monospace;
+  font-weight: 400;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.signature {
+  font-family: 'MiniMakerHubHand', cursive;
+  font-size: 1.75em;
+  font-weight: 500;
+  color: #172c38;
+  text-transform: none;
+  letter-spacing: normal;
+}

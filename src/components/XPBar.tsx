@@ -24,10 +24,10 @@ export function XPBar({ xp, compact = false, hideLabel = false, light = false }:
             <span className={`text-xs font-bold truncate ${light ? 'text-slate-600' : 'text-white/80'}`}>{localize(level.name, language)}</span>
           )}
           <div className="flex items-center gap-1">
-            <div className={`h-1.5 w-20 rounded-full overflow-hidden ${light ? 'bg-blue-100' : 'bg-white/20'}`}>
+            <div className={`h-1.5 w-20 rounded-full overflow-hidden ${light ? 'bg-[#CDEEF2]' : 'bg-white/20'}`}>
               <motion.div
                 className="h-full rounded-full"
-                style={{ background: light ? '#2563EB' : level.color }}
+                style={{ background: light ? '#10AEC2' : level.color }}
                 initial={{ width: 0 }}
                 animate={{ width: `${progress.percent}%` }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
