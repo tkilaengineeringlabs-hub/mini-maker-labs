@@ -102,9 +102,9 @@ export function LandingScreen({ onStart, hasProgress }: LandingScreenProps) {
           >
             <Logo size={36} />
             <div className="leading-none">
-              <div className="font-extrabold text-white text-lg tracking-tight">CodeKids</div>
+              <div className="font-extrabold text-white text-lg tracking-tight">Mini Maker Labs</div>
               <div className="text-[11px] text-purple-400 font-semibold hidden sm:block mt-0.5">
-                {t('landing.nav.tagline')}
+                Aprende creando.
               </div>
             </div>
           </motion.div>
@@ -148,7 +148,6 @@ export function LandingScreen({ onStart, hasProgress }: LandingScreenProps) {
         </div>
 
         <div className="relative z-10 max-w-4xl mx-auto">
-          {/* Badge */}
           <motion.div
             className="inline-flex items-center gap-2.5 mb-8"
             initial={{ opacity: 0, y: -10 }}
@@ -161,7 +160,6 @@ export function LandingScreen({ onStart, hasProgress }: LandingScreenProps) {
             </span>
           </motion.div>
 
-          {/* Headline */}
           <motion.h1
             className="text-5xl sm:text-7xl lg:text-[80px] font-extrabold mb-6 leading-[1.05] tracking-tight"
             initial={{ opacity: 0, y: 16 }}
@@ -171,7 +169,6 @@ export function LandingScreen({ onStart, hasProgress }: LandingScreenProps) {
             {gradientHeadline(t('landing.headline'))}
           </motion.h1>
 
-          {/* Subtext */}
           <motion.p
             className="text-lg sm:text-xl text-white/55 max-w-xl mx-auto mb-10 leading-relaxed font-medium"
             initial={{ opacity: 0 }}
@@ -181,7 +178,6 @@ export function LandingScreen({ onStart, hasProgress }: LandingScreenProps) {
             {t('landing.sub')}
           </motion.p>
 
-          {/* CTA */}
           <motion.div
             className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-16"
             initial={{ opacity: 0, y: 8 }}
@@ -214,7 +210,6 @@ export function LandingScreen({ onStart, hasProgress }: LandingScreenProps) {
             )}
           </motion.div>
 
-          {/* Stats strip */}
           <motion.div
             className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto"
             initial={{ opacity: 0, y: 12 }}
@@ -239,7 +234,6 @@ export function LandingScreen({ onStart, hasProgress }: LandingScreenProps) {
         </div>
       </section>
 
-      {/* ── TWO PATHS ─────────────────────────────── */}
       <section className="py-28 sm:py-32 px-5 sm:px-8 bg-white/[0.015] border-y border-white/[0.06]">
         <div className="max-w-5xl mx-auto">
           <FadeIn className="text-center mb-14">
@@ -253,148 +247,66 @@ export function LandingScreen({ onStart, hasProgress }: LandingScreenProps) {
           </FadeIn>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            {/* Block Coding */}
             <FadeIn delay={0.05}>
-              <div
-                className="relative rounded-3xl p-7 sm:p-8 border border-violet-500/20 overflow-hidden h-full flex flex-col"
-                style={{ background: 'linear-gradient(135deg, #0f0a1f 0%, #1a0f35 50%, #220f40 100%)' }}
-              >
+              <div className="relative rounded-3xl p-7 sm:p-8 border border-violet-500/20 overflow-hidden h-full flex flex-col" style={{ background: 'linear-gradient(135deg, #0f0a1f 0%, #1a0f35 50%, #220f40 100%)' }}>
                 <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/10 rounded-full blur-[60px] pointer-events-none" />
                 <div className="relative z-10 flex flex-col flex-1">
-                  <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5"
-                    style={{ background: 'rgba(124,58,237,0.2)', border: '1px solid rgba(124,58,237,0.3)' }}
-                  >
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5" style={{ background: 'rgba(124,58,237,0.2)', border: '1px solid rgba(124,58,237,0.3)' }}>
                     <Code2 size={24} color="#A78BFA" />
                   </div>
-                  <h3 className="text-2xl font-extrabold text-white mb-3">
-                    {t('landing.paths.blocks.title')}
-                  </h3>
-                  <p className="text-violet-200/60 text-base leading-relaxed mb-5">
-                    {t('landing.paths.blocks.desc')}
-                  </p>
+                  <h3 className="text-2xl font-extrabold text-white mb-3">{t('landing.paths.blocks.title')}</h3>
+                  <p className="text-violet-200/60 text-base leading-relaxed mb-5">{t('landing.paths.blocks.desc')}</p>
                   <div className="flex flex-wrap gap-2 mb-6">
                     {t('landing.paths.blocks.concepts').split(' · ').map(concept => (
-                      <span
-                        key={concept}
-                        className="text-xs font-semibold px-3 py-1 rounded-full"
-                        style={{ background: 'rgba(124,58,237,0.15)', color: '#c4b5fd' }}
-                      >
-                        {concept}
-                      </span>
+                      <span key={concept} className="text-xs font-semibold px-3 py-1 rounded-full" style={{ background: 'rgba(124,58,237,0.15)', color: '#c4b5fd' }}>{concept}</span>
                     ))}
                   </div>
                   <div className="mt-auto grid grid-cols-3 gap-3 pt-5 border-t border-violet-500/15">
-                    <div className="text-center">
-                      <div className="text-xl font-extrabold text-white">{WORLDS.length}</div>
-                      <div className="text-xs text-violet-300/50 mt-0.5">{t('landing.paths.stat.worlds')}</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-xl font-extrabold text-white">{totalCodingLessons}</div>
-                      <div className="text-xs text-violet-300/50 mt-0.5">{t('landing.paths.stat.lessons')}</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-xl font-extrabold text-white">5–14</div>
-                      <div className="text-xs text-violet-300/50 mt-0.5">{t('landing.paths.stat.ages')}</div>
-                    </div>
+                    <div className="text-center"><div className="text-xl font-extrabold text-white">{WORLDS.length}</div><div className="text-xs text-violet-300/50 mt-0.5">{t('landing.paths.stat.worlds')}</div></div>
+                    <div className="text-center"><div className="text-xl font-extrabold text-white">{totalCodingLessons}</div><div className="text-xs text-violet-300/50 mt-0.5">{t('landing.paths.stat.lessons')}</div></div>
+                    <div className="text-center"><div className="text-xl font-extrabold text-white">5–14</div><div className="text-xs text-violet-300/50 mt-0.5">{t('landing.paths.stat.ages')}</div></div>
                   </div>
                 </div>
               </div>
             </FadeIn>
 
-            {/* Brain Training */}
             <FadeIn delay={0.1}>
-              <div
-                className="relative rounded-3xl p-7 sm:p-8 border border-emerald-500/20 overflow-hidden h-full flex flex-col"
-                style={{ background: 'linear-gradient(135deg, #021a0e 0%, #041f12 50%, #062416 100%)' }}
-              >
+              <div className="relative rounded-3xl p-7 sm:p-8 border border-emerald-500/20 overflow-hidden h-full flex flex-col" style={{ background: 'linear-gradient(135deg, #021a0e 0%, #041f12 50%, #062416 100%)' }}>
                 <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-600/10 rounded-full blur-[60px] pointer-events-none" />
                 <div className="relative z-10 flex flex-col flex-1">
-                  <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5"
-                    style={{ background: 'rgba(16,185,129,0.2)', border: '1px solid rgba(16,185,129,0.3)' }}
-                  >
-                    <Lightbulb size={24} color="#34d399" />
-                  </div>
-                  <h3 className="text-2xl font-extrabold text-white mb-3">
-                    {t('landing.paths.thinking.title')}
-                  </h3>
-                  <p className="text-emerald-200/60 text-base leading-relaxed mb-5">
-                    {t('landing.paths.thinking.desc')}
-                  </p>
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5" style={{ background: 'rgba(16,185,129,0.2)', border: '1px solid rgba(16,185,129,0.3)' }}><Lightbulb size={24} color="#34d399" /></div>
+                  <h3 className="text-2xl font-extrabold text-white mb-3">{t('landing.paths.thinking.title')}</h3>
+                  <p className="text-emerald-200/60 text-base leading-relaxed mb-5">{t('landing.paths.thinking.desc')}</p>
                   <div className="flex flex-wrap gap-2 mb-6">
                     {t('landing.paths.thinking.topics').split(' · ').map(topic => (
-                      <span
-                        key={topic}
-                        className="text-xs font-semibold px-3 py-1 rounded-full"
-                        style={{ background: 'rgba(16,185,129,0.15)', color: '#6ee7b7' }}
-                      >
-                        {topic}
-                      </span>
+                      <span key={topic} className="text-xs font-semibold px-3 py-1 rounded-full" style={{ background: 'rgba(16,185,129,0.15)', color: '#6ee7b7' }}>{topic}</span>
                     ))}
                   </div>
                   <div className="mt-auto grid grid-cols-3 gap-3 pt-5 border-t border-emerald-500/15">
-                    <div className="text-center">
-                      <div className="text-xl font-extrabold text-white">{THINKING_WORLDS.length}</div>
-                      <div className="text-xs text-emerald-300/50 mt-0.5">{t('landing.paths.stat.worlds')}</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-xl font-extrabold text-white">{totalThinkingLessons}</div>
-                      <div className="text-xs text-emerald-300/50 mt-0.5">{t('landing.paths.stat.puzzles')}</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-xl font-extrabold text-white">5–13</div>
-                      <div className="text-xs text-emerald-300/50 mt-0.5">{t('landing.paths.stat.ages')}</div>
-                    </div>
+                    <div className="text-center"><div className="text-xl font-extrabold text-white">{THINKING_WORLDS.length}</div><div className="text-xs text-emerald-300/50 mt-0.5">{t('landing.paths.stat.worlds')}</div></div>
+                    <div className="text-center"><div className="text-xl font-extrabold text-white">{totalThinkingLessons}</div><div className="text-xs text-emerald-300/50 mt-0.5">{t('landing.paths.stat.puzzles')}</div></div>
+                    <div className="text-center"><div className="text-xl font-extrabold text-white">5–13</div><div className="text-xs text-emerald-300/50 mt-0.5">{t('landing.paths.stat.ages')}</div></div>
                   </div>
                 </div>
               </div>
             </FadeIn>
 
-            {/* Digital Citizenship */}
             <FadeIn delay={0.15}>
-              <div
-                className="relative rounded-3xl p-7 sm:p-8 border border-rose-500/20 overflow-hidden h-full flex flex-col"
-                style={{ background: 'linear-gradient(135deg, #1a020e 0%, #240412 50%, #2e0616 100%)' }}
-              >
+              <div className="relative rounded-3xl p-7 sm:p-8 border border-rose-500/20 overflow-hidden h-full flex flex-col" style={{ background: 'linear-gradient(135deg, #1a020e 0%, #240412 50%, #2e0616 100%)' }}>
                 <div className="absolute top-0 right-0 w-64 h-64 bg-rose-600/10 rounded-full blur-[60px] pointer-events-none" />
                 <div className="relative z-10 flex flex-col flex-1">
-                  <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5"
-                    style={{ background: 'rgba(244,63,94,0.2)', border: '1px solid rgba(244,63,94,0.3)' }}
-                  >
-                    <ShieldCheck size={24} color="#fb7185" />
-                  </div>
-                  <h3 className="text-2xl font-extrabold text-white mb-3">
-                    {t('landing.paths.safety.title')}
-                  </h3>
-                  <p className="text-rose-200/60 text-base leading-relaxed mb-5">
-                    {t('landing.paths.safety.desc')}
-                  </p>
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5" style={{ background: 'rgba(244,63,94,0.2)', border: '1px solid rgba(244,63,94,0.3)' }}><ShieldCheck size={24} color="#fb7185" /></div>
+                  <h3 className="text-2xl font-extrabold text-white mb-3">{t('landing.paths.safety.title')}</h3>
+                  <p className="text-rose-200/60 text-base leading-relaxed mb-5">{t('landing.paths.safety.desc')}</p>
                   <div className="flex flex-wrap gap-2 mb-6">
                     {t('landing.paths.safety.topics').split(' · ').map(topic => (
-                      <span
-                        key={topic}
-                        className="text-xs font-semibold px-3 py-1 rounded-full"
-                        style={{ background: 'rgba(244,63,94,0.15)', color: '#fda4af' }}
-                      >
-                        {topic}
-                      </span>
+                      <span key={topic} className="text-xs font-semibold px-3 py-1 rounded-full" style={{ background: 'rgba(244,63,94,0.15)', color: '#fda4af' }}>{topic}</span>
                     ))}
                   </div>
                   <div className="mt-auto grid grid-cols-3 gap-3 pt-5 border-t border-rose-500/15">
-                    <div className="text-center">
-                      <div className="text-xl font-extrabold text-white">{SAFETY_WORLDS.length}</div>
-                      <div className="text-xs text-rose-300/50 mt-0.5">{t('landing.paths.stat.worlds')}</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-xl font-extrabold text-white">{totalSafetyLessons}</div>
-                      <div className="text-xs text-rose-300/50 mt-0.5">{t('landing.paths.stat.puzzles')}</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-xl font-extrabold text-white">5–14</div>
-                      <div className="text-xs text-rose-300/50 mt-0.5">{t('landing.paths.stat.ages')}</div>
-                    </div>
+                    <div className="text-center"><div className="text-xl font-extrabold text-white">{SAFETY_WORLDS.length}</div><div className="text-xs text-rose-300/50 mt-0.5">{t('landing.paths.stat.worlds')}</div></div>
+                    <div className="text-center"><div className="text-xl font-extrabold text-white">{totalSafetyLessons}</div><div className="text-xs text-rose-300/50 mt-0.5">{t('landing.paths.stat.puzzles')}</div></div>
+                    <div className="text-center"><div className="text-xl font-extrabold text-white">5–14</div><div className="text-xs text-rose-300/50 mt-0.5">{t('landing.paths.stat.ages')}</div></div>
                   </div>
                 </div>
               </div>
@@ -403,129 +315,64 @@ export function LandingScreen({ onStart, hasProgress }: LandingScreenProps) {
         </div>
       </section>
 
-      {/* ── ALL WORLDS ───────────────────────────── */}
       <section className="py-28 sm:py-32 px-5 sm:px-8">
         <div className="max-w-5xl mx-auto">
           <FadeIn className="text-center mb-4">
             <SectionLabel text={t('landing.worlds.label')} />
-            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-              {t('landing.worlds.title')}
-            </h2>
+            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">{t('landing.worlds.title')}</h2>
           </FadeIn>
           <FadeIn delay={0.08} className="text-center mb-14">
-            <p className="text-white/45 text-lg max-w-2xl mx-auto leading-relaxed">
-              {t('landing.worlds.sub')}
-            </p>
+            <p className="text-white/45 text-lg max-w-2xl mx-auto leading-relaxed">{t('landing.worlds.sub')}</p>
           </FadeIn>
 
-          {/* Block Coding worlds */}
           <FadeIn className="mb-4">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 px-3 py-1.5 rounded-full">
-                <span className="text-sm">🎮</span>
-                <span className="text-violet-300 text-sm font-bold">{t('landing.worlds.blocks.label')}</span>
-              </div>
-              <div className="flex-1 h-px bg-white/[0.06]" />
-            </div>
+            <div className="flex items-center gap-3"><div className="flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 px-3 py-1.5 rounded-full"><span className="text-sm">🎮</span><span className="text-violet-300 text-sm font-bold">{t('landing.worlds.blocks.label')}</span></div><div className="flex-1 h-px bg-white/[0.06]" /></div>
           </FadeIn>
-
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-10">
             {WORLDS.filter(w => !w.isBonus).map((world, i) => (
               <FadeIn key={world.id} delay={i * 0.04}>
-                <div
-                  className="rounded-2xl p-4 border hover:scale-[1.03] transition-transform duration-200 cursor-default"
-                  style={{
-                    background: `${world.theme.accentColor}0d`,
-                    borderColor: `${world.theme.accentColor}25`,
-                  }}
-                >
+                <div className="rounded-2xl p-4 border hover:scale-[1.03] transition-transform duration-200 cursor-default" style={{ background: `${world.theme.accentColor}0d`, borderColor: `${world.theme.accentColor}25` }}>
                   <div className="text-2xl mb-2">{world.emoji}</div>
-                  <h3 className="font-bold text-sm text-white mb-1 leading-snug">
-                    {localize(world.name, language)}
-                  </h3>
-                  <div className="text-xs font-semibold mb-2" style={{ color: world.theme.accentColor }}>
-                    {localize(world.concept, language)}
-                  </div>
-                  <div className="text-xs text-white/30">
-                    {world.lessonCount} {t('landing.worlds.lessons')}
-                  </div>
+                  <h3 className="font-bold text-sm text-white mb-1 leading-snug">{localize(world.name, language)}</h3>
+                  <div className="text-xs font-semibold mb-2" style={{ color: world.theme.accentColor }}>{localize(world.concept, language)}</div>
+                  <div className="text-xs text-white/30">{world.lessonCount} {t('landing.worlds.lessons')}</div>
                 </div>
               </FadeIn>
             ))}
           </div>
 
-          {/* Brain Training worlds */}
           <FadeIn className="mb-4">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
-                <span className="text-sm">🧠</span>
-                <span className="text-emerald-300 text-sm font-bold">{t('landing.worlds.thinking.label')}</span>
-              </div>
-              <div className="flex-1 h-px bg-white/[0.06]" />
-            </div>
+            <div className="flex items-center gap-3"><div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full"><span className="text-sm">🧠</span><span className="text-emerald-300 text-sm font-bold">{t('landing.worlds.thinking.label')}</span></div><div className="flex-1 h-px bg-white/[0.06]" /></div>
           </FadeIn>
-
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {THINKING_WORLDS.map((world, i) => {
               const c = THINKING_COLOR_MAP[world.color] ?? { accent: '#a855f7', bg: 'rgba(168,85,247,0.08)' }
               return (
                 <FadeIn key={world.id} delay={i * 0.04}>
-                  <div
-                    className="rounded-2xl p-4 border hover:scale-[1.03] transition-transform duration-200 cursor-default"
-                    style={{
-                      background: c.bg,
-                      borderColor: `${c.accent}25`,
-                    }}
-                  >
+                  <div className="rounded-2xl p-4 border hover:scale-[1.03] transition-transform duration-200 cursor-default" style={{ background: c.bg, borderColor: `${c.accent}25` }}>
                     <div className="text-2xl mb-2">{world.emoji}</div>
-                    <h3 className="font-bold text-sm text-white mb-1 leading-snug">
-                      {localize(world.name, language)}
-                    </h3>
-                    <div className="text-xs font-semibold mb-2" style={{ color: c.accent }}>
-                      {localize(world.concept, language)}
-                    </div>
-                    <div className="text-xs text-white/30">
-                      {world.lessonCount} {t('landing.worlds.lessons')}
-                    </div>
+                    <h3 className="font-bold text-sm text-white mb-1 leading-snug">{localize(world.name, language)}</h3>
+                    <div className="text-xs font-semibold mb-2" style={{ color: c.accent }}>{localize(world.concept, language)}</div>
+                    <div className="text-xs text-white/30">{world.lessonCount} {t('landing.worlds.lessons')}</div>
                   </div>
                 </FadeIn>
               )
             })}
           </div>
 
-          {/* Digital Citizenship worlds */}
           <FadeIn className="mb-4 mt-10">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 bg-rose-500/10 border border-rose-500/20 px-3 py-1.5 rounded-full">
-                <span className="text-sm">🛡️</span>
-                <span className="text-rose-300 text-sm font-bold">{t('landing.worlds.safety.label')}</span>
-              </div>
-              <div className="flex-1 h-px bg-white/[0.06]" />
-            </div>
+            <div className="flex items-center gap-3"><div className="flex items-center gap-2 bg-rose-500/10 border border-rose-500/20 px-3 py-1.5 rounded-full"><span className="text-sm">🛡️</span><span className="text-rose-300 text-sm font-bold">{t('landing.worlds.safety.label')}</span></div><div className="flex-1 h-px bg-white/[0.06]" /></div>
           </FadeIn>
-
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {SAFETY_WORLDS.map((world, i) => {
               const c = THINKING_COLOR_MAP[world.color] ?? { accent: '#a855f7', bg: 'rgba(168,85,247,0.08)' }
               return (
                 <FadeIn key={world.id} delay={i * 0.04}>
-                  <div
-                    className="rounded-2xl p-4 border hover:scale-[1.03] transition-transform duration-200 cursor-default"
-                    style={{
-                      background: c.bg,
-                      borderColor: `${c.accent}25`,
-                    }}
-                  >
+                  <div className="rounded-2xl p-4 border hover:scale-[1.03] transition-transform duration-200 cursor-default" style={{ background: c.bg, borderColor: `${c.accent}25` }}>
                     <div className="text-2xl mb-2">{world.emoji}</div>
-                    <h3 className="font-bold text-sm text-white mb-1 leading-snug">
-                      {localize(world.name, language)}
-                    </h3>
-                    <div className="text-xs font-semibold mb-2" style={{ color: c.accent }}>
-                      {localize(world.concept, language)}
-                    </div>
-                    <div className="text-xs text-white/30">
-                      {world.lessonCount} {t('landing.worlds.lessons')}
-                    </div>
+                    <h3 className="font-bold text-sm text-white mb-1 leading-snug">{localize(world.name, language)}</h3>
+                    <div className="text-xs font-semibold mb-2" style={{ color: c.accent }}>{localize(world.concept, language)}</div>
+                    <div className="text-xs text-white/30">{world.lessonCount} {t('landing.worlds.lessons')}</div>
                   </div>
                 </FadeIn>
               )
@@ -534,16 +381,12 @@ export function LandingScreen({ onStart, hasProgress }: LandingScreenProps) {
         </div>
       </section>
 
-      {/* ── FOR PARENTS ──────────────────────────── */}
       <section className="py-28 sm:py-32 px-5 sm:px-8 bg-white/[0.015] border-y border-white/[0.06]">
         <div className="max-w-4xl mx-auto">
           <FadeIn className="text-center mb-14">
             <SectionLabel text={t('landing.trust.label')} />
-            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-              {gradientHeadline(t('landing.trust.title'))}
-            </h2>
+            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">{gradientHeadline(t('landing.trust.title'))}</h2>
           </FadeIn>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
               { Icon: Gift,          color: '#22C55E', titleKey: 'landing.trust.free.title',    descKey: 'landing.trust.free.desc' },
@@ -552,16 +395,8 @@ export function LandingScreen({ onStart, hasProgress }: LandingScreenProps) {
             ].map(({ Icon, color, titleKey, descKey }, i) => (
               <FadeIn key={titleKey} delay={i * 0.08}>
                 <div className="rounded-2xl p-6 border border-white/[0.07] bg-white/[0.02] hover:border-white/[0.12] transition-all duration-200 h-full flex flex-col gap-4">
-                  <div
-                    className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: `${color}18`, border: `1px solid ${color}30` }}
-                  >
-                    <Icon size={22} color={color} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-base text-white mb-2">{t(titleKey)}</h3>
-                    <p className="text-white/45 text-sm leading-relaxed">{t(descKey)}</p>
-                  </div>
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: `${color}18`, border: `1px solid ${color}30` }}><Icon size={22} color={color} /></div>
+                  <div><h3 className="font-bold text-base text-white mb-2">{t(titleKey)}</h3><p className="text-white/45 text-sm leading-relaxed">{t(descKey)}</p></div>
                 </div>
               </FadeIn>
             ))}
@@ -569,35 +404,19 @@ export function LandingScreen({ onStart, hasProgress }: LandingScreenProps) {
         </div>
       </section>
 
-      {/* ── ORIGIN STORY ─────────────────────────── */}
       <section className="py-20 sm:py-24 px-5 sm:px-8">
         <div className="max-w-3xl mx-auto">
           <FadeIn>
-            <div
-              className="relative rounded-3xl p-8 sm:p-10 border border-amber-500/20 overflow-hidden text-center"
-              style={{ background: 'linear-gradient(135deg, #1a100a 0%, #1f1308 60%, #1a0e06 100%)' }}
-            >
-              <div className="pointer-events-none absolute inset-0">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-40 bg-amber-500/10 rounded-full blur-[60px]" />
-              </div>
+            <div className="relative rounded-3xl p-8 sm:p-10 border border-amber-500/20 overflow-hidden text-center" style={{ background: 'linear-gradient(135deg, #1a100a 0%, #1f1308 60%, #1a0e06 100%)' }}>
+              <div className="pointer-events-none absolute inset-0"><div className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-40 bg-amber-500/10 rounded-full blur-[60px]" /></div>
               <div className="relative z-10">
-                <p className="text-amber-400 text-xs font-semibold uppercase tracking-[0.15em] mb-4">
-                  {t('landing.origin.label')}
-                </p>
-                <div className="text-4xl mb-5">❤️</div>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-4 tracking-tight">
-                  {t('landing.origin.title')}
-                </h2>
-                <p className="text-white/50 text-base sm:text-lg leading-relaxed max-w-xl mx-auto mb-7">
-                  {t('landing.origin.desc')}
-                </p>
+                <p className="text-amber-400 text-xs font-semibold uppercase tracking-[0.15em] mb-4">{t('landing.origin.label')}</p>
+                <div className="text-4xl mb-5">🛠️</div>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-4 tracking-tight">Mini Maker Labs</h2>
+                <p className="text-white/50 text-base sm:text-lg leading-relaxed max-w-xl mx-auto mb-7">Aprender tecnología debe sentirse como construir algo real: experimentar, equivocarse, entender y volver a intentarlo.</p>
                 <div className="flex flex-wrap justify-center gap-3">
-                  <span className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/25 text-amber-300 px-4 py-2 rounded-full text-sm font-semibold">
-                    👨‍👧‍👦 {t('landing.origin.tag.built')}
-                  </span>
-                  <span className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/25 text-amber-300 px-4 py-2 rounded-full text-sm font-semibold">
-                    🧒 {t('landing.origin.tag.tested')}
-                  </span>
+                  <span className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/25 text-amber-300 px-4 py-2 rounded-full text-sm font-semibold">⚡ Aprende haciendo</span>
+                  <span className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/25 text-amber-300 px-4 py-2 rounded-full text-sm font-semibold">🤖 De bloques a robots reales</span>
                 </div>
               </div>
             </div>
@@ -605,30 +424,12 @@ export function LandingScreen({ onStart, hasProgress }: LandingScreenProps) {
         </div>
       </section>
 
-      {/* ── FINAL CTA ────────────────────────────── */}
       <section className="py-32 sm:py-40 px-5 sm:px-8">
         <div className="max-w-2xl mx-auto text-center">
-          <FadeIn>
-            <h2 className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-5 leading-[1.05]">
-              {gradientHeadline(t('landing.final.title'))}
-            </h2>
-          </FadeIn>
-          <FadeIn delay={0.08}>
-            <p className="text-white/50 text-lg mb-10 leading-relaxed">
-              {t('landing.final.sub')}
-            </p>
-          </FadeIn>
+          <FadeIn><h2 className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-5 leading-[1.05]">{gradientHeadline(t('landing.final.title'))}</h2></FadeIn>
+          <FadeIn delay={0.08}><p className="text-white/50 text-lg mb-10 leading-relaxed">{t('landing.final.sub')}</p></FadeIn>
           <FadeIn delay={0.15}>
-            <motion.button
-              onClick={onStart}
-              className="w-full sm:w-auto px-10 py-5 rounded-2xl font-bold text-xl text-white block mx-auto"
-              style={{
-                background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
-                boxShadow: '0 8px 48px rgba(124,58,237,0.5)',
-              }}
-              whileHover={{ scale: 1.04, boxShadow: '0 16px 64px rgba(124,58,237,0.7)' }}
-              whileTap={{ scale: 0.97 }}
-            >
+            <motion.button onClick={onStart} className="w-full sm:w-auto px-10 py-5 rounded-2xl font-bold text-xl text-white block mx-auto" style={{ background: 'linear-gradient(135deg, #7C3AED, #EC4899)', boxShadow: '0 8px 48px rgba(124,58,237,0.5)' }} whileHover={{ scale: 1.04, boxShadow: '0 16px 64px rgba(124,58,237,0.7)' }} whileTap={{ scale: 0.97 }}>
               {t('landing.final.cta')}
             </motion.button>
           </FadeIn>
