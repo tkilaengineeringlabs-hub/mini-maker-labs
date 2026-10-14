@@ -277,7 +277,10 @@ export const MicrobitBlocklyWorkspace = forwardRef<MicrobitBlocklyHandle, Microb
       registerBlocks(spanish)
 
       const workspace = Blockly.inject(hostRef.current, {
-        toolbox: toolboxForModule(moduleNumber, spanish) as Blockly.utils.toolbox.ToolboxDefinition,
+        // Blockly's toolbox typing is narrower than its runtime JSON format.
+        // Keep the object simple and let Blockly validate it at runtime.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        toolbox: toolboxForModule(moduleNumber, spanish) as any,
         theme: THEME,
         renderer: 'zelos',
         trashcan: true,
