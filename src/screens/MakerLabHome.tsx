@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Cpu, Lightbulb, ToggleLeft, Cable, Gauge, RotateCcw, ChevronRight, FlaskConical } from 'lucide-react'
+import { Cpu, Lightbulb, ToggleLeft, Cable, Gauge, RotateCcw, ChevronRight, FlaskConical, Play } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../i18n/LanguageProvider'
 
@@ -70,7 +70,7 @@ const MODULES = [
 export function MakerLabHome() {
   const { language } = useLanguage()
   const navigate = useNavigate()
-  const [selected, setSelected] = useState(1)
+  const [selected, setSelected] = useState(2)
   const spanish = language === 'id'
   const lesson = MODULES.find(m => m.number === selected) ?? MODULES[0]
   const LessonIcon = lesson.icon
@@ -147,17 +147,25 @@ export function MakerLabHome() {
           <h3 className="text-2xl font-black mb-3">{spanish ? lesson.titleEs : lesson.titleEn}</h3>
           <p className="text-white/55 leading-relaxed mb-6">{spanish ? lesson.descEs : lesson.descEn}</p>
 
-          <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 mb-6">
+          <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 mb-5">
             <div className="text-xs uppercase tracking-wider text-white/35 font-bold mb-2">
               {spanish ? 'Objetivo' : 'Goal'}
             </div>
             <div className="font-bold text-white/85">{spanish ? lesson.goalEs : lesson.goalEn}</div>
           </div>
 
-          <div className="rounded-2xl border border-amber-400/15 bg-amber-400/[0.06] p-4 text-sm text-amber-100/75">
+          <button
+            onClick={() => navigate(`/app/blocks/microbit/${lesson.number}`)}
+            className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-500 hover:bg-cyan-400 transition-colors px-5 py-4 text-slate-950 font-black mb-4"
+          >
+            <Play size={18} fill="currentColor" />
+            {spanish ? 'Abrir módulo' : 'Open module'}
+          </button>
+
+          <div className="rounded-2xl border border-emerald-400/15 bg-emerald-400/[0.06] p-4 text-sm text-emerald-100/75">
             {spanish
-              ? 'Estamos construyendo ahora el editor de bloques + MicroPython para que estos módulos puedan controlar una micro:bit real.'
-              : 'We are now building the Blocks + MicroPython editor so these modules can control a real micro:bit.'}
+              ? 'Ya incluye editor visual, generación de MicroPython y simulador de matriz LED. La conexión USB con hardware real será la siguiente fase.'
+              : 'It now includes a visual editor, MicroPython generation and an LED-matrix simulator. Real USB hardware connection comes next.'}
           </div>
         </aside>
       </div>
@@ -167,8 +175,8 @@ export function MakerLabHome() {
           <div className="font-black text-xl mb-1">{spanish ? 'Retos de lógica con bloques' : 'Block logic challenges'}</div>
           <p className="text-white/45 max-w-2xl">
             {spanish
-              ? 'El simulador original sigue disponible como zona de práctica mientras construimos los bloques de hardware.'
-              : 'The original simulator remains available as a practice zone while we build the hardware blocks.'}
+              ? 'El simulador original sigue disponible como zona de práctica mientras construimos las rutas de hardware.'
+              : 'The original simulator remains available as a practice zone while we build the hardware paths.'}
           </p>
         </div>
         <button
