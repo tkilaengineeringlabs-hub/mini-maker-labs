@@ -7,6 +7,7 @@ import {
   type MicrobitBlocklyHandle,
   type MicrobitPreview,
 } from '../components/MicrobitBlocklyWorkspace'
+import { MicrobitBoard } from '../components/MicrobitBoard'
 
 type Module = {
   number: number
@@ -51,8 +52,8 @@ const MODULES: Module[] = [
     introEn: 'Buttons are inputs. Your program can now react to what a person does.',
     missionEs: 'Haz que al presionar A se muestre un corazón.',
     missionEn: 'Make button A show a heart.',
-    tipEs: 'Arrastra “si botón A está presionado” y mete dentro el bloque “mostrar corazón”.',
-    tipEn: 'Drag “if button A is pressed” and place “show heart” inside it.',
+    tipEs: 'Arrastra “si botón A está presionado” y mete dentro el bloque “mostrar corazón”. Luego ejecuta y pulsa A en la micro:bit simulada.',
+    tipEn: 'Drag “if button A is pressed”, place “show heart” inside it, run, then click A on the simulated micro:bit.',
   },
   {
     number: 4,
@@ -62,8 +63,8 @@ const MODULES: Module[] = [
     introEn: 'P0, P1 and P2 can send or receive signals for external LEDs, sensors and actuators.',
     missionEs: 'Enciende P1, espera un segundo y apágalo.',
     missionEn: 'Turn P1 on, wait one second, then turn it off.',
-    tipEs: 'Usa dos bloques “poner pin P1” con un bloque de espera entre ellos.',
-    tipEn: 'Use two “set pin P1” blocks with a wait block between them.',
+    tipEs: 'Usa dos bloques “poner pin P1” con un bloque de espera entre ellos. El pin activo se ilumina en la placa.',
+    tipEn: 'Use two “set pin P1” blocks with a wait block between them. The active pin lights up on the board.',
   },
   {
     number: 5,
@@ -88,25 +89,6 @@ const MODULES: Module[] = [
     tipEn: 'The signal comes from P1. For real hardware, power the servo separately and share GND with the micro:bit.',
   },
 ]
-
-function LedMatrix({ mode }: { mode: MicrobitPreview }) {
-  const patterns = {
-    heart: [0,1,0,1,0, 1,1,1,1,1, 1,1,1,1,1, 0,1,1,1,0, 0,0,1,0,0],
-    smile: [0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0],
-    blank: Array(25).fill(0),
-  }
-
-  return (
-    <div className="grid grid-cols-5 gap-2 w-fit mx-auto rounded-3xl bg-[#111827] border border-white/10 p-5 shadow-2xl">
-      {patterns[mode].map((on, index) => (
-        <div
-          key={index}
-          className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full border transition-all ${on ? 'bg-red-400 border-red-300 shadow-[0_0_18px_rgba(248,113,113,.65)]' : 'bg-red-950/40 border-red-900/50'}`}
-        />
-      ))}
-    </div>
-  )
-}
 
 export function MakerMicrobitLesson() {
   const { moduleNumber } = useParams<{ moduleNumber: string }>()
@@ -140,8 +122,13 @@ export function MakerMicrobitLesson() {
     setRan(true)
   }
 
+  const resetSimulation = () => {
+    setRan(false)
+    setSimulatedPreview('blank')
+  }
+
   return (
-    <div className="max-w-[1500px] mx-auto px-4 sm:px-6 py-7 text-white">
+    <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-7 text-white">
       <button
         onClick={() => navigate('/app/blocks')}
         className="inline-flex items-center gap-2 text-white/55 hover:text-white mb-5 font-bold"
@@ -161,7 +148,7 @@ export function MakerMicrobitLesson() {
         </div>
       </div>
 
-      <div className="grid xl:grid-cols-[minmax(0,1fr)_420px] gap-5 items-start">
+      <div className="grid 2xl:grid-cols-[minmax(0,1fr)_560px] gap-5 items-start">
         <section className="rounded-3xl border border-white/10 bg-[#0c0918]/90 overflow-hidden">
           <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-white/10 bg-[#120d27]/85">
             <div>
@@ -203,40 +190,41 @@ export function MakerMicrobitLesson() {
           </div>
         </section>
 
-        <section className="space-y-5 xl:sticky xl:top-24">
+        <section className="space-y-5 2xl:sticky 2xl:top-24">
           <div className="rounded-3xl border border-white/10 bg-[#120d27]/85 p-5">
-            <div className="flex items-center gap-2 font-black mb-4">
-              <Code2 size={19} className="text-violet-300" /> MicroPython
-            </div>
-            <pre className="rounded-2xl bg-black/50 border border-white/10 p-4 text-xs sm:text-sm text-emerald-200 overflow-x-auto whitespace-pre-wrap min-h-[250px] max-h-[360px] overflow-y-auto">
-              <code>{code}</code>
-            </pre>
-            <p className="text-xs text-white/30 mt-3">
-              {spanish
-                ? 'El código cambia en tiempo real mientras mueves, conectas o editas bloques.'
-                : 'The code updates live while you move, connect or edit blocks.'}
-            </p>
-          </div>
-
-          <div className="rounded-3xl border border-white/10 bg-[#120d27]/85 p-5 text-center">
-            <div className="flex items-center justify-between gap-3 mb-5 text-left">
+            <div className="flex items-center justify-between gap-3 mb-4">
               <div>
-                <div className="font-black">{spanish ? 'Simulador' : 'Simulator'}</div>
-                <div className="text-xs text-white/35">micro:bit 5×5 LED</div>
+                <div className="font-black text-lg">{spanish ? 'micro:bit simulada' : 'Simulated micro:bit'}</div>
+                <div className="text-xs text-white/35 mt-1">LED 5×5 · A/B · P0/P1/P2 · sensores</div>
               </div>
               <button
-                onClick={() => { setRan(false); setSimulatedPreview('blank') }}
+                onClick={resetSimulation}
                 className="p-2 rounded-xl border border-white/10 bg-white/5 text-white/50 hover:text-white"
                 title={spanish ? 'Reiniciar simulador' : 'Reset simulator'}
               >
                 <RotateCcw size={17} />
               </button>
             </div>
-            <LedMatrix mode={ran ? simulatedPreview : 'blank'} />
-            <p className="text-xs text-white/35 mt-4">
-              {ran
-                ? (spanish ? 'Programa ejecutado en el simulador.' : 'Program executed in simulator.')
-                : (spanish ? 'Presiona Ejecutar para ver el resultado.' : 'Press Run to preview the result.')}
+
+            <MicrobitBoard
+              preview={ran ? simulatedPreview : 'blank'}
+              code={code}
+              running={ran}
+              language={language}
+            />
+          </div>
+
+          <div className="rounded-3xl border border-white/10 bg-[#120d27]/85 p-5">
+            <div className="flex items-center gap-2 font-black mb-4">
+              <Code2 size={19} className="text-violet-300" /> MicroPython
+            </div>
+            <pre className="rounded-2xl bg-black/50 border border-white/10 p-4 text-xs sm:text-sm text-emerald-200 overflow-x-auto whitespace-pre-wrap min-h-[220px] max-h-[320px] overflow-y-auto">
+              <code>{code}</code>
+            </pre>
+            <p className="text-xs text-white/30 mt-3">
+              {spanish
+                ? 'El código cambia en tiempo real mientras mueves, conectas o editas bloques.'
+                : 'The code updates live while you move, connect or edit blocks.'}
             </p>
           </div>
         </section>
