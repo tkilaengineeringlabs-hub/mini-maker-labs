@@ -1,7 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap');
 @import 'tailwindcss';
 @config '../tailwind.config.js';
 
-/* Brand CSS custom properties — used by React Aria components and future shadcn tokens */
+/* Brand CSS custom properties */
 :root {
   --color-brand-purple: #7C3AED;
   --color-brand-light: #8B5CF6;
@@ -9,9 +10,17 @@
   --color-brand-pink: #EC4899;
   --color-app-bg: #0A0618;
   --color-app-card: #130D2E;
+
+  /* Mini Maker Labs visual system — introduced screen by screen to avoid global regressions. */
+  --mml-ink: #0f2747;
+  --mml-navy: #153d73;
+  --mml-blue: #2f73df;
+  --mml-blue-soft: #eaf3ff;
+  --mml-sky: #f6faff;
+  --mml-border: #d8e5f7;
+  --mml-muted: #6f84a5;
 }
 
-/* React Aria ModalOverlay fade — RAC waits for [data-exiting] animation before unmounting */
 .ck-overlay[data-entering] {
   animation: ck-fade-in 0.15s ease forwards;
 }
@@ -20,11 +29,11 @@
 }
 @keyframes ck-fade-in {
   from { opacity: 0; }
-  to   { opacity: 1; }
+  to { opacity: 1; }
 }
 @keyframes ck-fade-out {
   from { opacity: 1; }
-  to   { opacity: 0; }
+  to { opacity: 0; }
 }
 
 @layer base {
@@ -45,7 +54,6 @@
     overflow-x: hidden;
   }
 
-  /* Scrollbar styling */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -64,6 +72,22 @@
 }
 
 @layer utilities {
+  .font-fun {
+    font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  .mml-surface {
+    background: #ffffff;
+    border: 1px solid var(--mml-border);
+    box-shadow: 0 12px 34px rgba(21,61,115,0.08);
+  }
+
+  .mml-soft-surface {
+    background: var(--mml-sky);
+    border: 1px solid var(--mml-border);
+  }
+
   .text-gradient-purple {
     @apply text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400;
   }
@@ -100,7 +124,6 @@
   50% { opacity: 1; }
 }
 
-/* Blockly overrides for better kid experience */
 .blocklyToolboxDiv {
   border-right: 1px solid rgba(139,92,246,0.2) !important;
 }
@@ -119,12 +142,10 @@
   fill: #1E1B4B !important;
 }
 
-/* Prevent text selection during drag */
 .blocklyWorkspace {
   user-select: none;
 }
 
-/* Line clamp utility */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
