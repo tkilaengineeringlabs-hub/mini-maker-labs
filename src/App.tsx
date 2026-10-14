@@ -6,6 +6,7 @@ import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { BlocksHome } from './screens/BlocksHome'
 import { MakerLabHome } from './screens/MakerLabHome'
+import { MakerMicrobitLesson } from './screens/MakerMicrobitLesson'
 import { LessonScreen } from './screens/LessonScreen'
 import { LandingScreen } from './screens/LandingScreen'
 import { PathSelector } from './screens/PathSelector'
@@ -17,7 +18,7 @@ import { NotFoundScreen } from './screens/NotFoundScreen'
 import { useProgress } from './store/useProgress'
 import { getLessonByNumber, getLessonsByWorld } from './data/lessons'
 import { getWorld, WORLDS } from './data/worlds'
-import { getThinkingWorld, THINKING_WORLDS } from './data/thinkingWorlds'
+import { getThinkingWorld } from './data/thinkingWorlds'
 import { getThinkingLessonByNumber, getThinkingLessonsByWorld } from './data/thinkingLessons'
 import { getSafetyWorld } from './data/safetyWorlds'
 import { getSafetyLessonByNumber, getSafetyLessonsByWorld } from './data/safetyLessons'
@@ -58,8 +59,6 @@ function GameLayout() {
     </div>
   )
 }
-
-// ── Maker Lab / blocks routes ─────────────────────────────────
 
 function WorldMapRoute() {
   return <MakerLabHome />
@@ -233,6 +232,7 @@ export default function App({ isHydrating }: AppProps) {
           <Route index element={<PathSelectorRoute />} />
           <Route path="blocks">
             <Route index element={<WorldMapRoute />} />
+            <Route path="microbit/:moduleNumber" element={<MakerMicrobitLesson />} />
             <Route path="world/:worldId" element={<WorldDetailRoute />} />
             <Route path="world/:worldId/:lessonNumber" element={<LessonRoute />} />
           </Route>
