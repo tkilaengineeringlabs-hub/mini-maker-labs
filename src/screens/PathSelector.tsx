@@ -1,12 +1,14 @@
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, ArrowLeft, Play } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Brain, Blocks3, ShieldCheck, Play } from 'lucide-react'
 import { useLanguage } from '../i18n/LanguageProvider'
 import type { PlayerProgress } from '../types'
 
 interface PathSelectorProps {
   progress: PlayerProgress
 }
+
+const CARD = 'group relative rounded-[24px] border border-[#d8e5f7] bg-white p-6 text-left shadow-[0_10px_30px_rgba(21,61,115,.06)] transition hover:-translate-y-0.5 hover:border-[#bdd3ef] hover:shadow-[0_16px_38px_rgba(21,61,115,.1)]'
 
 export function PathSelector({ progress }: PathSelectorProps) {
   const navigate = useNavigate()
@@ -19,108 +21,76 @@ export function PathSelector({ progress }: PathSelectorProps) {
     id.startsWith('passwords-') || id.startsWith('privacy-') || id.startsWith('kindness-') || id.startsWith('scams-')
   )
 
+  const cards = [
+    { key: 'thinking', icon: Brain, progress: hasThinkingProgress, name: t('path.thinking.name'), desc: t('path.thinking.desc'), route: '/app/thinking' },
+    { key: 'blocks', icon: Blocks3, progress: hasBlocksProgress, name: t('path.blocks.name'), desc: t('path.blocks.desc'), route: '/app/blocks' },
+    { key: 'safety', icon: ShieldCheck, progress: hasSafetyProgress, name: t('path.safety.name'), desc: t('path.safety.desc'), route: '/app/safety' },
+  ]
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
-      <motion.div
-        className="text-center mb-12"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-      >
-        <div className="text-5xl mb-4">🌟</div>
-        <h1 className="text-3xl sm:text-4xl font-black text-white mb-2">
-          {t('path.choose')}
-        </h1>
-      </motion.div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <motion.button
-          onClick={() => navigate('/app/thinking')}
-          className="group relative bg-gradient-to-br from-blue-900/60 to-cyan-900/40 border border-blue-500/30 rounded-3xl p-8 text-left hover:border-blue-400/60 hover:from-blue-800/60 transition-all duration-300 cursor-pointer"
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+    <div className="min-h-[calc(100vh-70px)] bg-[#f6faff] text-[#102a4f]">
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+        <motion.div
+          className="mb-9 text-center"
+          initial={{ opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
         >
-          {hasThinkingProgress && (
-            <div className="absolute top-4 right-4 bg-blue-500/80 text-white text-xs font-bold px-2 py-1 rounded-full">
-              {t('path.continue')}
-            </div>
-          )}
-          <div className="text-5xl mb-4">🧠</div>
-          <h2 className="text-2xl font-black text-white mb-2">{t('path.thinking.name')}</h2>
-          <p className="text-blue-200 text-sm leading-relaxed mb-6">{t('path.thinking.desc')}</p>
-          <div className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-2.5 rounded-xl transition-colors text-sm">
-            {hasThinkingProgress
-              ? <><Play className="w-3.5 h-3.5 fill-current" /><span>{t('path.continue')}</span></>
-              : <><span>{t('path.start')}</span><ArrowRight className="w-3.5 h-3.5" /></>}
+          <div className="mx-auto mb-3 inline-flex rounded-full border border-[#d8e5f7] bg-white px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[.14em] text-[#6680a3]">
+            Aprende a tu ritmo
           </div>
-        </motion.button>
+          <h1 className="font-fun text-4xl font-semibold text-[#102a4f] sm:text-5xl">{t('path.choose')}</h1>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#7488a7] sm:text-base">
+            Tres rutas simples. Elige una, aprende haciendo y sigue avanzando.
+          </p>
+        </motion.div>
 
-        <motion.button
-          onClick={() => navigate('/app/blocks')}
-          className="group relative bg-gradient-to-br from-purple-900/60 to-indigo-900/40 border border-purple-500/30 rounded-3xl p-8 text-left hover:border-purple-400/60 hover:from-purple-800/60 transition-all duration-300 cursor-pointer"
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          {hasBlocksProgress && (
-            <div className="absolute top-4 right-4 bg-purple-500/80 text-white text-xs font-bold px-2 py-1 rounded-full">
-              {t('path.continue')}
-            </div>
-          )}
-          <div className="text-5xl mb-4">🧩</div>
-          <h2 className="text-2xl font-black text-white mb-2">{t('path.blocks.name')}</h2>
-          <p className="text-purple-200 text-sm leading-relaxed mb-6">{t('path.blocks.desc')}</p>
-          <div className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-bold px-5 py-2.5 rounded-xl transition-colors text-sm">
-            {hasBlocksProgress
-              ? <><Play className="w-3.5 h-3.5 fill-current" /><span>{t('path.continue')}</span></>
-              : <><span>{t('path.start')}</span><ArrowRight className="w-3.5 h-3.5" /></>}
-          </div>
-        </motion.button>
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          {cards.map((card, index) => {
+            const Icon = card.icon
+            return (
+              <motion.button
+                key={card.key}
+                onClick={() => navigate(card.route)}
+                className={CARD}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.06 }}
+                whileTap={{ scale: 0.99 }}
+              >
+                {card.progress && (
+                  <div className="absolute right-4 top-4 rounded-full bg-[#eef5ff] px-2.5 py-1 text-[11px] font-extrabold text-[#315784]">
+                    {t('path.continue')}
+                  </div>
+                )}
 
-        <motion.button
-          onClick={() => navigate('/app/safety')}
-          className="group relative bg-gradient-to-br from-rose-900/60 to-pink-900/40 border border-rose-500/30 rounded-3xl p-8 text-left hover:border-rose-400/60 hover:from-rose-800/60 transition-all duration-300 cursor-pointer"
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          {hasSafetyProgress && (
-            <div className="absolute top-4 right-4 bg-rose-500/80 text-white text-xs font-bold px-2 py-1 rounded-full">
-              {t('path.continue')}
-            </div>
-          )}
-          <div className="text-5xl mb-4">🛡️</div>
-          <h2 className="text-2xl font-black text-white mb-2">{t('path.safety.name')}</h2>
-          <p className="text-rose-200 text-sm leading-relaxed mb-6">{t('path.safety.desc')}</p>
-          <div className="inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-500 text-white font-bold px-5 py-2.5 rounded-xl transition-colors text-sm">
-            {hasSafetyProgress
-              ? <><Play className="w-3.5 h-3.5 fill-current" /><span>{t('path.continue')}</span></>
-              : <><span>{t('path.start')}</span><ArrowRight className="w-3.5 h-3.5" /></>}
-          </div>
-        </motion.button>
+                <div className="mb-5 grid h-12 w-12 place-items-center rounded-2xl bg-[#eef5ff] text-[#2f73df]">
+                  <Icon size={24} />
+                </div>
+
+                <h2 className="font-fun mb-2 text-2xl font-semibold text-[#17345f]">{card.name}</h2>
+                <p className="mb-6 min-h-[66px] text-sm leading-6 text-[#7185a3]">{card.desc}</p>
+
+                <div className="inline-flex items-center gap-2 rounded-xl bg-[#153d73] px-4 py-2.5 text-sm font-extrabold text-white transition group-hover:bg-[#1f5fbf]">
+                  {card.progress ? <Play className="h-3.5 w-3.5 fill-current" /> : null}
+                  <span>{card.progress ? t('path.continue') : t('path.start')}</span>
+                  {!card.progress ? <ArrowRight className="h-3.5 w-3.5" /> : null}
+                </div>
+              </motion.button>
+            )
+          })}
+        </div>
+
+        <motion.div className="mt-9 text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
+          <button
+            onClick={() => navigate('/')}
+            className="inline-flex items-center gap-1.5 text-sm font-bold text-[#6f84a5] transition hover:text-[#153d73]"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            {t('path.back')}
+          </button>
+        </motion.div>
       </div>
-
-      <motion.div
-        className="text-center mt-10"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-      >
-        <button
-          onClick={() => navigate('/')}
-          className="inline-flex items-center gap-1.5 text-purple-400 hover:text-purple-200 text-sm transition-colors"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          {t('path.back')}
-        </button>
-      </motion.div>
     </div>
   )
 }
