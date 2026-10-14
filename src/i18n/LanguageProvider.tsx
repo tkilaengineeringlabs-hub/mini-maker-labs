@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
-import { TRANSLATIONS, type Language } from './translations'
+import { TRANSLATIONS, type Language } from './translationsMx'
 
 interface LanguageContextValue {
   language: Language
@@ -9,13 +9,15 @@ interface LanguageContextValue {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null)
 
-const LANG_KEY = 'codekids_language'
+const LANG_KEY = 'mini_maker_labs_language'
 export const LANG_PARAM = 'lang'
 
 function getLangFromSearch(): Language | null {
   if (typeof window === 'undefined') return null
   const fromSearch = new URLSearchParams(window.location.search).get(LANG_PARAM)
-  return fromSearch === 'en' || fromSearch === 'id' ? fromSearch : null
+  if (fromSearch === 'en') return 'en'
+  if (fromSearch === 'es' || fromSearch === 'id') return 'id'
+  return null
 }
 
 function getInitialLanguage(): Language {
@@ -23,19 +25,12 @@ function getInitialLanguage(): Language {
   if (fromSearch) return fromSearch
   const stored = localStorage.getItem(LANG_KEY)
   if (stored === 'en' || stored === 'id') return stored
-  return navigator.language.startsWith('id') ? 'id' : 'en'
+  // Mini Maker Labs is Spanish-first. English remains available from the selector.
+  return 'id'
 }
 
 interface LanguageProviderProps {
   children: ReactNode
-  /**
-   * Pins the first render's language instead of reading localStorage/navigator.language.
-   * Only for hydrating prerendered markup (the landing page): server and client must
-   * agree on the very first render or React logs a hydration mismatch. When set, the
-   * real stored/browser language is detected and applied right after mount instead.
-   * Leave unset for every normal (non-hydrating) mount — it keeps today's exact,
-   * flash-free behavior.
-   */
   forcedInitialLanguage?: Language
 }
 
