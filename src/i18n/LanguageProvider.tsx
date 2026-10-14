@@ -25,7 +25,6 @@ function getInitialLanguage(): Language {
   if (fromSearch) return fromSearch
   const stored = localStorage.getItem(LANG_KEY)
   if (stored === 'en' || stored === 'id') return stored
-  // Mini Maker Labs is Spanish-first. English remains available from the selector.
   return 'id'
 }
 
@@ -44,6 +43,22 @@ export function LanguageProvider({ children, forcedInitialLanguage }: LanguagePr
     const detected = getInitialLanguage()
     setLanguageState(prev => (detected !== prev ? detected : prev))
   }, [forcedInitialLanguage])
+
+  useEffect(() => {
+    // The original UI renders the internal language ids directly (EN / ID).
+    // Mini Maker Labs keeps those ids internally for compatibility, but exposes ES / EN.
+    const relabel = () => {
+      document.querySelectorAll('button').forEach(button => {
+        const text = button.textContent?.trim().toLowerCase()
+        if (text === 'id') button.textContent = 'ES'
+        if (text === 'en') button.textContent = 'EN'
+      })
+    }
+
+    relabel()
+    const frame = requestAnimationFrame(relabel)
+    return () => cancelAnimationFrame(frame)
+  }, [language])
 
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang)
