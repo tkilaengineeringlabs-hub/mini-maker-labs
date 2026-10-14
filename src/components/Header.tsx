@@ -37,40 +37,37 @@ export function Header({ progress }: HeaderProps) {
   )
 
   const handleClick = () => {
-    if (isLessonPage) {
-      navigate(`/app/${subPath}/world/${pathParts[3]}`)
-    } else if (isWorldPage) {
-      navigate(`/app/${subPath}`)
-    } else if (isSubHome) {
-      navigate('/app')
-    } else {
-      navigate('/')
-    }
+    if (isLessonPage) navigate(`/app/${subPath}/world/${pathParts[3]}`)
+    else if (isWorldPage) navigate(`/app/${subPath}`)
+    else if (isSubHome) navigate('/app')
+    else navigate('/')
   }
 
   return (
-    <header className="sticky top-0 z-30 bg-[#0A0618]/80 backdrop-blur-md border-b border-purple-900/30">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
-        <button onClick={handleClick} className="flex items-center gap-2 group shrink-0">
+    <header className="sticky top-0 z-30 border-b border-[#d8e5f7] bg-white/92 backdrop-blur-xl shadow-[0_8px_28px_rgba(36,84,145,.06)]">
+      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
+        <button onClick={handleClick} className="group flex shrink-0 items-center gap-2">
           {showBack ? (
-            <div className="flex items-center gap-2 text-purple-300 hover:text-white transition-colors font-bold">
-              <ArrowLeft className="w-5 h-5 shrink-0" />
-              <span className="text-sm hidden sm:inline">
+            <div className="flex items-center gap-2 font-bold text-[#456a9f] transition-colors hover:text-[#153d73]">
+              <ArrowLeft className="h-5 w-5 shrink-0" />
+              <span className="hidden text-sm sm:inline">
                 {subPath === 'thinking' ? t('path.thinking.name') : subPath === 'safety' ? t('path.safety.name') : t('path.blocks.name')}
               </span>
             </div>
           ) : (
-            <motion.div className="flex items-center gap-2" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Logo size={32} className="shrink-0" />
-              <div className="leading-tight hidden sm:block">
-                <div className="font-black text-white text-lg">Mini Maker Labs</div>
-                <div className="text-xs text-purple-300 font-semibold">{t('landing.nav.tagline')}</div>
+            <motion.div className="flex items-center gap-2" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+              <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#eaf3ff] ring-1 ring-[#cfe0f6]">
+                <Logo size={28} className="shrink-0" />
+              </div>
+              <div className="hidden leading-tight sm:block">
+                <div className="text-lg font-black text-[#102a4f]">Mini Maker Labs</div>
+                <div className="text-xs font-semibold text-[#6f84a5]">{t('landing.nav.tagline')}</div>
               </div>
             </motion.div>
           )}
         </button>
 
-        <div className="flex-1 ml-2">
+        <div className="ml-2 flex-1">
           <XPBar xp={progress.xp} compact hideLabel={subPath === 'thinking' || subPath === 'safety'} />
         </div>
 
@@ -78,22 +75,22 @@ export function Header({ progress }: HeaderProps) {
           onClick={() => setStatsOpen(true)}
           aria-label={t('stats.open')}
           title={t('stats.open')}
-          className="flex items-center gap-1 bg-yellow-500/20 border border-yellow-400/30 hover:bg-yellow-500/30 hover:border-yellow-400/50 transition-colors px-2 sm:px-3 py-1.5 rounded-full shrink-0 cursor-pointer"
+          className="flex shrink-0 cursor-pointer items-center gap-1 rounded-full border border-[#d4e2f6] bg-[#f6f9fe] px-2 py-1.5 transition hover:bg-[#edf4ff] sm:px-3"
         >
-          <Star className="w-3.5 h-3.5 text-yellow-300 fill-yellow-300 shrink-0" />
-          <span className="font-bold text-yellow-200 text-sm">{shownStars}</span>
+          <Star className="h-3.5 w-3.5 shrink-0 fill-[#f3b51b] text-[#f3b51b]" />
+          <span className="text-sm font-bold text-[#315784]">{shownStars}</span>
         </button>
 
-        <div className="flex rounded-xl overflow-hidden border border-purple-800/40 shrink-0">
+        <div className="flex shrink-0 overflow-hidden rounded-xl border border-[#d4e2f6] bg-[#f6f9fe] p-1">
           <button
             onClick={() => setLanguage('id')}
-            className={`px-2.5 py-1.5 text-xs font-bold transition-colors ${language === 'id' ? 'bg-purple-600 text-white' : 'text-purple-300 hover:text-white hover:bg-purple-900/40'}`}
+            className={`rounded-lg px-2.5 py-1 text-xs font-bold transition-colors ${language === 'id' ? 'bg-[#153d73] text-white' : 'text-[#5e789d] hover:bg-white hover:text-[#153d73]'}`}
           >
             ES
           </button>
           <button
             onClick={() => setLanguage('en')}
-            className={`px-2.5 py-1.5 text-xs font-bold transition-colors ${language === 'en' ? 'bg-purple-600 text-white' : 'text-purple-300 hover:text-white hover:bg-purple-900/40'}`}
+            className={`rounded-lg px-2.5 py-1 text-xs font-bold transition-colors ${language === 'en' ? 'bg-[#153d73] text-white' : 'text-[#5e789d] hover:bg-white hover:text-[#153d73]'}`}
           >
             EN
           </button>
