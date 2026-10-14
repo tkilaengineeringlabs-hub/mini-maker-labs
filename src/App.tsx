@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, Navigate, useNavigate, useParams, Outlet } from 'react-router-dom'
+import { Routes, Route, Navigate, useNavigate, useParams, useLocation, Outlet } from 'react-router-dom'
 import { LanguageProvider } from './i18n/LanguageProvider'
 import { LanguageUrlSync } from './i18n/LanguageUrlSync'
 import { Header } from './components/Header'
@@ -26,10 +26,11 @@ import type { WorldId, ThinkingWorldId, SafetyWorldId } from './types'
 
 function GameLayout() {
   const { progress } = useProgress()
+  const isHub = useLocation().pathname.replace(/\/$/, '') === '/app'
 
   return (
-    <div className="min-h-screen bg-[#0A0618] font-nunito">
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+    <div className={`min-h-screen font-nunito ${isHub ? 'bg-[#F5F9FD] text-[#0F2F57]' : 'bg-[#0A0618]'}`}>
+      {!isHub && <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-1/4 w-80 h-80 bg-pink-600/8 rounded-full blur-3xl" />
         <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-indigo-600/8 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
@@ -48,14 +49,14 @@ function GameLayout() {
             }}
           />
         ))}
-      </div>
+      </div>}
 
-      <Header progress={progress} />
+      <Header progress={progress} light={isHub} />
 
       <main className="relative z-10">
         <Outlet />
       </main>
-      <Footer />
+      {isHub ? <div className="bg-[#0F2F57]"><Footer /></div> : <Footer />}
     </div>
   )
 }

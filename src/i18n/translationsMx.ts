@@ -8,6 +8,10 @@ type Translations = Record<string, string>
 export const TRANSLATIONS: Record<Language, Translations> = {
   en: {
     ...BASE.en,
+    'hub.brand': 'Mini Maker Labs',
+    'hub.thinking': 'Thinking',
+    'hub.safety': 'Digital safety',
+    'hub.subtitle': 'Choose a path. Build, explore and solve challenges at your own pace.',
     'landing.paths.blocks.title': 'Maker Lab',
     'landing.paths.blocks.desc': 'Build real projects with blocks, electronics and hardware. Start with micro:bit and grow into robotics.',
     'landing.paths.blocks.concepts': 'micro:bit · Electronics · Sensors · Servos · Robotics · Python',
@@ -19,6 +23,10 @@ export const TRANSLATIONS: Record<Language, Translations> = {
   },
   id: {
     ...BASE.es,
+    'hub.brand': 'Mini Maker Labs',
+    'hub.thinking': 'Pensamiento',
+    'hub.safety': 'Seguridad digital',
+    'hub.subtitle': 'Elige una ruta. Construye, explora y resuelve retos a tu ritmo.',
     'landing.paths.blocks.title': 'Maker Lab',
     'landing.paths.blocks.desc': 'Construye proyectos reales con bloques, electrónica y hardware. Empieza con micro:bit y avanza hacia robótica.',
     'landing.paths.blocks.concepts': 'micro:bit · Electrónica · Sensores · Servos · Robótica · Python',

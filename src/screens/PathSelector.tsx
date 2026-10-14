@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, ArrowLeft, Play, Brain, Blocks3, ShieldCheck } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Play, Brain, Blocks, ShieldCheck, Sparkles } from 'lucide-react'
 import { useLanguage } from '../i18n/LanguageProvider'
 import type { PlayerProgress } from '../types'
 
@@ -29,43 +29,43 @@ export function PathSelector({ progress }: PathSelectorProps) {
       key: 'thinking',
       route: '/app/thinking',
       icon: Brain,
-      title: t('path.thinking.name'),
+      title: t('hub.thinking'),
       description: t('path.thinking.desc'),
       hasProgress: hasThinkingProgress,
-      accent: '#2563EB',
+      accent: '#0F2F57',
       soft: '#EFF6FF',
     },
     {
       key: 'blocks',
       route: '/app/blocks',
-      icon: Blocks3,
+      icon: Blocks,
       title: t('path.blocks.name'),
       description: t('path.blocks.desc'),
       hasProgress: hasBlocksProgress,
-      accent: '#1D4ED8',
+      accent: '#0F2F57',
       soft: '#EEF4FF',
     },
     {
       key: 'safety',
       route: '/app/safety',
       icon: ShieldCheck,
-      title: t('path.safety.name'),
+      title: t('hub.safety'),
       description: t('path.safety.desc'),
       hasProgress: hasSafetyProgress,
-      accent: '#0F4C81',
+      accent: '#0F2F57',
       soft: '#F0F7FC',
     },
   ]
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-      <section className="overflow-hidden rounded-[32px] border border-blue-100 bg-[#F8FBFF] shadow-[0_24px_80px_rgba(15,76,129,0.12)]">
-        <div className="border-b border-blue-100 bg-white px-6 py-8 text-center sm:px-10 sm:py-10">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0F2F57] text-xl text-white shadow-sm">
-            ✦
+      <section className="overflow-hidden">
+        <div className="px-6 py-8 text-center sm:px-10 sm:py-10">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl text-xl text-blue-600 bg-blue-100 shadow-sm">
+            <Sparkles size={24} aria-hidden="true" />
           </div>
           <p className="mb-2 text-xs font-black uppercase tracking-[0.24em] text-blue-500">
-            MINI MAKER LABS
+            {t('hub.brand')}
           </p>
           <h1
             className="text-3xl font-black tracking-tight text-[#0F2F57] sm:text-5xl"
@@ -74,7 +74,7 @@ export function PathSelector({ progress }: PathSelectorProps) {
             {t('path.choose')}
           </h1>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
-            Elige una ruta y aprende construyendo, programando y resolviendo retos paso a paso.
+            {t('hub.subtitle')}
           </p>
         </div>
 
@@ -86,7 +86,7 @@ export function PathSelector({ progress }: PathSelectorProps) {
                 key={path.key}
                 type="button"
                 onClick={() => navigate(path.route)}
-                className="group relative flex min-h-[300px] flex-col rounded-[24px] border border-blue-100 bg-white p-6 text-left shadow-[0_10px_30px_rgba(15,76,129,0.06)] transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_18px_40px_rgba(15,76,129,0.10)]"
+                className="group relative flex min-h-[300px] flex-col rounded-[24px] border border-blue-100 bg-white p-6 text-left shadow-[0_10px_30px_rgba(15,76,129,0.06)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-500 transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_18px_40px_rgba(15,76,129,0.10)]"
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.32, delay: index * 0.07 }}
@@ -107,7 +107,6 @@ export function PathSelector({ progress }: PathSelectorProps) {
 
                 <h2
                   className="mb-3 text-2xl font-black text-[#12385F]"
-                  style={funFont}
                 >
                   {path.title}
                 </h2>
@@ -129,11 +128,11 @@ export function PathSelector({ progress }: PathSelectorProps) {
           })}
         </div>
 
-        <div className="border-t border-blue-100 bg-white px-6 py-5 text-center">
+        <div className="px-6 py-5 text-center">
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 transition hover:text-[#0F2F57]"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-xl px-3 focus-visible:outline-2 focus-visible:outline-blue-500 text-sm font-bold text-slate-500 transition hover:text-[#0F2F57]"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             {t('path.back')}

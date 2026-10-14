@@ -7,9 +7,10 @@ interface XPBarProps {
   xp: number
   compact?: boolean
   hideLabel?: boolean
+  light?: boolean
 }
 
-export function XPBar({ xp, compact = false, hideLabel = false }: XPBarProps) {
+export function XPBar({ xp, compact = false, hideLabel = false, light = false }: XPBarProps) {
   const { language } = useLanguage()
   const level = getLevelInfo(xp)
   const progress = getXPProgress(xp)
@@ -20,19 +21,19 @@ export function XPBar({ xp, compact = false, hideLabel = false }: XPBarProps) {
         <span className="text-xl">{level.badge}</span>
         <div className="flex flex-col min-w-0">
           {!hideLabel && (
-            <span className="text-xs font-bold text-white/80 truncate">{localize(level.name, language)}</span>
+            <span className={`text-xs font-bold truncate ${light ? 'text-slate-600' : 'text-white/80'}`}>{localize(level.name, language)}</span>
           )}
           <div className="flex items-center gap-1">
-            <div className="h-1.5 w-20 rounded-full bg-white/20 overflow-hidden">
+            <div className={`h-1.5 w-20 rounded-full overflow-hidden ${light ? 'bg-blue-100' : 'bg-white/20'}`}>
               <motion.div
                 className="h-full rounded-full"
-                style={{ background: level.color }}
+                style={{ background: light ? '#2563EB' : level.color }}
                 initial={{ width: 0 }}
                 animate={{ width: `${progress.percent}%` }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
               />
             </div>
-            <span className="text-xs text-white/60">Lv.{level.level}</span>
+            <span className={`text-xs ${light ? 'text-slate-500' : 'text-white/60'}`}>Lv.{level.level}</span>
           </div>
         </div>
       </div>

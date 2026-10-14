@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ArrowLeft, Star } from 'lucide-react'
+import { ArrowLeft, Star, Code2 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { XPBar } from './XPBar'
@@ -11,9 +11,10 @@ import { useLanguage } from '../i18n/LanguageProvider'
 
 interface HeaderProps {
   progress: PlayerProgress
+  light?: boolean
 }
 
-export function Header({ progress }: HeaderProps) {
+export function Header({ progress, light = false }: HeaderProps) {
   const { language, setLanguage, t } = useLanguage()
   const navigate = useNavigate()
   const location = useLocation()
@@ -49,9 +50,9 @@ export function Header({ progress }: HeaderProps) {
   }
 
   return (
-    <header className="sticky top-0 z-30 bg-[#0A0618]/80 backdrop-blur-md border-b border-purple-900/30">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
-        <button onClick={handleClick} className="flex items-center gap-2 group shrink-0">
+    <header className={`sticky top-0 z-30 backdrop-blur-md border-b ${light ? 'bg-white/95 border-blue-100' : 'bg-[#0A0618]/80 border-purple-900/30'}`}>
+      <div className={`max-w-6xl mx-auto px-4 py-3 flex items-center gap-3 ${light ? 'flex-wrap' : ''}`}>
+        <button onClick={handleClick} aria-label={light ? t('path.back') : undefined} className={`flex items-center gap-2 group shrink-0 ${light ? 'min-h-11 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-500' : ''}`}>
           {showBack ? (
             <div className="flex items-center gap-2 text-purple-300 hover:text-white transition-colors font-bold">
               <ArrowLeft className="w-5 h-5 shrink-0" />
@@ -61,39 +62,41 @@ export function Header({ progress }: HeaderProps) {
             </div>
           ) : (
             <motion.div className="flex items-center gap-2" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Logo size={32} className="shrink-0" />
+              {light ? <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0F2F57] text-white"><Code2 size={24} /></span> : <Logo size={32} className="shrink-0" />}
               <div className="leading-tight hidden sm:block">
-                <div className="font-black text-white text-lg">Mini Maker Labs</div>
-                <div className="text-xs text-purple-300 font-semibold">{t('landing.nav.tagline')}</div>
+                <div className={`font-black text-lg ${light ? 'text-[#0F2F57]' : 'text-white'}`}>{light ? t('hub.brand') : 'Mini Maker Labs'}</div>
+                <div className={`text-xs font-semibold ${light ? 'text-slate-500' : 'text-purple-300'}`}>{t('landing.nav.tagline')}</div>
               </div>
             </motion.div>
           )}
         </button>
 
         <div className="flex-1 ml-2">
-          <XPBar xp={progress.xp} compact hideLabel={subPath === 'thinking' || subPath === 'safety'} />
+          <XPBar xp={progress.xp} light={light} compact hideLabel={subPath === 'thinking' || subPath === 'safety'} />
         </div>
 
         <button
           onClick={() => setStatsOpen(true)}
           aria-label={t('stats.open')}
           title={t('stats.open')}
-          className="flex items-center gap-1 bg-yellow-500/20 border border-yellow-400/30 hover:bg-yellow-500/30 hover:border-yellow-400/50 transition-colors px-2 sm:px-3 py-1.5 rounded-full shrink-0 cursor-pointer"
+          className={`flex items-center gap-1 border transition-colors px-2 sm:px-3 py-1.5 rounded-full shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-500 ${light ? 'min-h-11 bg-blue-50 border-blue-100 hover:bg-blue-100 text-[#0F2F57]' : 'bg-yellow-500/20 border-yellow-400/30 hover:bg-yellow-500/30 hover:border-yellow-400/50'}`}
         >
-          <Star className="w-3.5 h-3.5 text-yellow-300 fill-yellow-300 shrink-0" />
-          <span className="font-bold text-yellow-200 text-sm">{shownStars}</span>
+          <Star className={`w-3.5 h-3.5 shrink-0 ${light ? 'text-blue-500 fill-blue-200' : 'text-yellow-300 fill-yellow-300'}`} />
+          <span className={`font-bold text-sm ${light ? 'text-[#0F2F57]' : 'text-yellow-200'}`}>{shownStars}</span>
         </button>
 
-        <div className="flex rounded-xl overflow-hidden border border-purple-800/40 shrink-0">
+        <div className={`flex rounded-xl overflow-hidden border shrink-0 ${light ? 'border-blue-100' : 'border-purple-800/40'}`}>
           <button
             onClick={() => setLanguage('id')}
-            className={`px-2.5 py-1.5 text-xs font-bold transition-colors ${language === 'id' ? 'bg-purple-600 text-white' : 'text-purple-300 hover:text-white hover:bg-purple-900/40'}`}
+            aria-pressed={language === 'id'}
+            className={`px-2.5 py-1.5 text-xs font-bold transition-colors ${light ? 'min-h-11 min-w-11' : ''} ${light ? (language === 'id' ? 'bg-[#0F2F57] text-white' : 'text-slate-600 hover:bg-blue-50') : (language === 'id' ? 'bg-purple-600 text-white' : 'text-purple-300 hover:text-white hover:bg-purple-900/40')}`}
           >
             ES
           </button>
           <button
             onClick={() => setLanguage('en')}
-            className={`px-2.5 py-1.5 text-xs font-bold transition-colors ${language === 'en' ? 'bg-purple-600 text-white' : 'text-purple-300 hover:text-white hover:bg-purple-900/40'}`}
+            aria-pressed={language === 'en'}
+            className={`px-2.5 py-1.5 text-xs font-bold transition-colors ${light ? 'min-h-11 min-w-11' : ''} ${light ? (language === 'en' ? 'bg-[#0F2F57] text-white' : 'text-slate-600 hover:bg-blue-50') : (language === 'en' ? 'bg-purple-600 text-white' : 'text-purple-300 hover:text-white hover:bg-purple-900/40')}`}
           >
             EN
           </button>
