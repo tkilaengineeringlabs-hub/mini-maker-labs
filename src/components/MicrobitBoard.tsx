@@ -88,65 +88,87 @@ export function MicrobitBoard({ moduleNumber, preview, code, running, language }
   return (
     <div className={`${styles.hardware} w-full`}>
       <div className={`${styles.hardwareScene} relative mx-auto w-full max-w-[390px] select-none ${moduleNumber === 6 ? 'h-[470px]' : 'h-[290px]'}`}>
-        <div className="absolute left-1/2 top-2 h-[265px] w-[310px] -translate-x-1/2 overflow-hidden rounded-[28px] bg-[#111214] shadow-[0_22px_45px_rgba(26,45,83,.22)]">
-          <div className="absolute left-0 top-0 h-20 w-20 bg-[#ffd63d] [clip-path:polygon(0_0,100%_0,0_100%)]" />
-          <div className="absolute left-[54px] top-0 h-14 w-14 bg-[#ffd63d] [clip-path:polygon(0_0,55%_0,0_55%)]" />
-          <div className="absolute left-[102px] top-0 h-10 w-10 bg-[#ffd63d] [clip-path:polygon(0_0,55%_0,0_55%)]" />
+        <div className="absolute left-1/2 top-2 h-[253px] w-[310px] -translate-x-1/2 overflow-hidden rounded-[19px] bg-[#111111] shadow-[0_8px_20px_rgba(17,17,17,.12)]">
+          <svg className="absolute inset-0 h-full w-full" viewBox="0 0 558 456" aria-hidden="true">
+            <rect width="558" height="456" rx="34" fill="#111111" />
+            <path d="M0 0H129L0 127ZM129 0H194L129 64ZM194 0H228L194 33Z" fill="#FF3454" />
 
-          <div className="absolute left-1/2 top-5 h-7 w-14 -translate-x-1/2 rounded-full border-[6px] border-[#ffd63d] bg-[#0d0e10]">
-            <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#ffd63d]" />
-          </div>
+            <rect x="236" y="62" width="89" height="44" rx="22" fill="none" stroke="#FF3454" strokeWidth="11" />
+            <circle cx="259" cy="84" r="6" fill="#FF3454" />
+            <circle cx="303" cy="84" r="6" fill="#FF3454" />
+
+            {ledPattern.map((on, index) => (
+              <rect
+                key={index}
+                x={174 + (index % 5) * 52}
+                y={127 + Math.floor(index / 5) * 49}
+                width="11"
+                height="23"
+                rx="2"
+                fill={on ? '#FF3454' : '#222222'}
+                style={{ filter: on ? 'drop-shadow(0 0 5px #FF3454)' : 'none', transition: 'fill 150ms, filter 150ms' }}
+              />
+            ))}
+
+            <circle cx="16" cy="227" r="5" fill="#FFFFFF" />
+            <circle cx="544" cy="227" r="5" fill="#FFFFFF" />
+            <path d="M25 308H61V272ZM500 149H536L500 185Z" fill="#FF3454" />
+            <text x="44" y="304" fontFamily="Arial, sans-serif" fontSize="22" fontWeight="700" fill="#111111">A</text>
+            <text x="502" y="170" fontFamily="Arial, sans-serif" fontSize="22" fontWeight="700" fill="#111111">B</text>
+
+            {/* Reference marking only: combined input behavior is unchanged. */}
+            <rect x="469" y="282" width="62" height="62" rx="3" fill="#332C2C" />
+            <circle cx="479" cy="292" r="7" fill="#764B4B" />
+            <circle cx="521" cy="292" r="7" fill="#764B4B" />
+            <circle cx="479" cy="334" r="7" fill="#764B4B" />
+            <circle cx="521" cy="334" r="7" fill="#764B4B" />
+            <circle cx="500" cy="313" r="19" fill="#FFFFFF" />
+            <text x="434" y="309" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="18" fontWeight="700" fill="#FFFFFF">A+B</text>
+
+            <rect x="0" y="402" width="558" height="54" fill="#D4AE2D" />
+            {Array.from({ length: 40 }, (_, index) => (
+              <rect key={index} x={index * 14 + 2} y="402" width="3" height="54" fill="#28251A" />
+            ))}
+            {pins.map((pin, index) => (
+              <g key={pin.label} transform={`translate(${[45, 157, 280, 403, 514][index]}, 0)`}>
+                <rect x="-26" y="383" width="52" height="73" fill={pin.active ? '#FFE574' : '#D4AE2D'} />
+                <circle cy="383" r="26" fill={pin.active ? '#FFE574' : '#D4AE2D'} style={{ filter: pin.active ? 'drop-shadow(0 0 5px #FFD53D)' : 'none' }} />
+                <circle cy="383" r="21" fill={pin.active ? '#6A5410' : '#111111'} />
+                <text y="437" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize={pin.label === 'GND' ? 23 : 25} fontWeight="700" fill="#111111">{pin.label}</text>
+                <rect x="-11" y="449" width="22" height="7" fill="#AAA9A3" />
+              </g>
+            ))}
+          </svg>
 
           <button
             type="button"
             onClick={() => pressButton('a')}
-            className="absolute left-6 top-[83px] h-14 w-14 rounded-2xl border border-white/10 bg-transparent active:scale-95"
+            className="absolute left-[6px] top-[99px] h-14 w-14 rounded-md bg-transparent active:scale-95"
             title={spanish ? 'Botón A' : 'Button A'}
+            aria-label={spanish ? 'Botón A' : 'Button A'}
           >
-            <span className="absolute inset-[7px] rounded-lg border-4 border-[#b4b7bd] bg-[#27282b] shadow-[inset_0_0_0_5px_#111214]" />
-            <span className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#6f7378]" />
-            <span className="absolute -left-1 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-[#c9ccd0]" />
-            <span className="absolute -right-1 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-[#c9ccd0]" />
-            <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-black text-white">A</span>
+            <span className="absolute inset-[11px] rounded-[2px] bg-[#92938E]" />
+            <span className="absolute left-[14px] top-[14px] h-[7px] w-[7px] rounded-full bg-[#764B4B]" />
+            <span className="absolute right-[14px] top-[14px] h-[7px] w-[7px] rounded-full bg-[#764B4B]" />
+            <span className="absolute left-[14px] bottom-[14px] h-[7px] w-[7px] rounded-full bg-[#764B4B]" />
+            <span className="absolute right-[14px] bottom-[14px] h-[7px] w-[7px] rounded-full bg-[#764B4B]" />
+            <span className="absolute left-1/2 top-1/2 h-[19px] w-[19px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#111111]" />
           </button>
 
           <button
             type="button"
             onClick={() => pressButton('b')}
-            className="absolute right-6 top-[83px] h-14 w-14 rounded-2xl border border-white/10 bg-transparent active:scale-95"
+            className="absolute right-[4px] top-[99px] h-14 w-14 rounded-md bg-transparent active:scale-95"
             title={spanish ? 'Botón B' : 'Button B'}
+            aria-label={spanish ? 'Botón B' : 'Button B'}
           >
-            <span className="absolute inset-[7px] rounded-lg border-4 border-[#b4b7bd] bg-[#27282b] shadow-[inset_0_0_0_5px_#111214]" />
-            <span className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#6f7378]" />
-            <span className="absolute -left-1 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-[#c9ccd0]" />
-            <span className="absolute -right-1 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-[#c9ccd0]" />
-            <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-black text-white">B</span>
+            <span className="absolute inset-[11px] rounded-[2px] bg-[#92938E]" />
+            <span className="absolute left-[14px] top-[14px] h-[7px] w-[7px] rounded-full bg-[#764B4B]" />
+            <span className="absolute right-[14px] top-[14px] h-[7px] w-[7px] rounded-full bg-[#764B4B]" />
+            <span className="absolute left-[14px] bottom-[14px] h-[7px] w-[7px] rounded-full bg-[#764B4B]" />
+            <span className="absolute right-[14px] bottom-[14px] h-[7px] w-[7px] rounded-full bg-[#764B4B]" />
+            <span className="absolute left-1/2 top-1/2 h-[19px] w-[19px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#111111]" />
           </button>
-
-          <div className="absolute left-1/2 top-[72px] grid -translate-x-1/2 grid-cols-5 gap-[8px]">
-            {ledPattern.map((on, index) => (
-              <div
-                key={index}
-                className={`h-4 w-4 rounded-[3px] transition-all ${on ? 'bg-[#ff4051] shadow-[0_0_11px_rgba(255,64,81,.95)]' : 'bg-[#2a191b]'}`}
-              />
-            ))}
-          </div>
-
-          <div className="absolute bottom-0 left-0 right-0 h-[76px] bg-[#0d0e10]">
-            <div className="absolute inset-x-0 top-0 flex justify-center gap-[7px]">
-              {Array.from({ length: 31 }, (_, index) => (
-                <span key={index} className="h-8 w-[4px] bg-[#d6ad24]" />
-              ))}
-            </div>
-            <div className="absolute inset-x-3 bottom-1 flex items-end justify-between">
-              {pins.map(pin => (
-                <div key={pin.label} className="relative flex h-[62px] w-[54px] items-end justify-center">
-                  <div className={`absolute bottom-0 h-[48px] w-[48px] rounded-full border-[7px] ${pin.active ? 'border-[#ffe574] bg-[#6a5410] shadow-[0_0_18px_rgba(255,213,61,.55)]' : 'border-[#d6ad24] bg-[#111214]'}`} />
-                  <span className="relative z-10 mb-[15px] text-[12px] font-black text-[#ffe36a]">{pin.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
 
         {moduleNumber === 6 && (<>
