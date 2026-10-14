@@ -1,0 +1,3 @@
+# Automatic micro:bit simulation without code evaluation
+Date: 2026-10-14
+Use a limited parser of existing generated instructions, immutable hardware state and cancellable sequential jobs. Whole-source icon/pin/servo searches incorrectly execute event bodies on startup and skip wait timing. Evaluating arbitrary Python/JS would add unnecessary dependencies and expose browser capabilities. Separate boot actions from A/B event bodies, cancel stale jobs on lifecycle changes, retain independent A/B jobs and permit existing Start/Run controls as optional replay. Restart replays boot actions so event-only programs remain blank and ready for input. Keep all rendering styles and generation unchanged.

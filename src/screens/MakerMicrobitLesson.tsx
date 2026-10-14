@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   ArrowLeft,
@@ -24,9 +24,8 @@ import { useLanguage } from '../i18n/LanguageProvider'
 import {
   MicrobitBlocklyWorkspace,
   type MicrobitBlocklyHandle,
-  type MicrobitPreview,
 } from '../components/MicrobitBlocklyWorkspace'
-import { MicrobitBoard } from '../components/MicrobitBoard'
+import { MicrobitBoard, initialMicrobitState } from '../components/MicrobitBoard'
 import logo from '../assets/landing/mini-maker-labs-logo.png'
 import styles from './MakerMicrobitLesson.module.css'
 
@@ -121,16 +120,6 @@ const MODULES: Module[] = [
   },
 ]
 
-function previewFromCode(code: string): MicrobitPreview {
-  const heart = Math.max(code.lastIndexOf('Image.HEART'), code.lastIndexOf('IconNames.Heart'))
-  const happy = Math.max(code.lastIndexOf('Image.HAPPY'), code.lastIndexOf('IconNames.Happy'))
-  const clear = Math.max(code.lastIndexOf('display.clear()'), code.lastIndexOf('basic.clearScreen()'))
-  const latest = Math.max(heart, happy, clear)
-  if (latest === heart && heart >= 0) return 'heart'
-  if (latest === happy && happy >= 0) return 'smile'
-  return 'blank'
-}
-
 function CodeEditor({ value, onChange, language }: { value: string; onChange: (value: string) => void; language: CodeMode }) {
   return (
     <div className="relative h-full min-h-[220px] overflow-hidden bg-white">
@@ -159,30 +148,23 @@ export function MakerMicrobitLesson() {
   const [editorMode, setEditorMode] = useState<EditorMode>('blocks')
   const [codeMode, setCodeMode] = useState<CodeMode>('python')
   const [blockCount, setBlockCount] = useState(0)
-  const [preview, setPreview] = useState<MicrobitPreview>('blank')
-  const [simulatedPreview, setSimulatedPreview] = useState<MicrobitPreview>('blank')
-  const [ran, setRan] = useState(false)
+  const [restartKey, setRestartKey] = useState(0)
+  const [simulation, setSimulation] = useState(initialMicrobitState)
   const [copied, setCopied] = useState(false)
 
   const activeCode = codeMode === 'python' ? pythonCode : javascriptCode
   const simulatorCode = editorMode === 'javascript' ? javascriptCode : pythonCode
 
-  const status = useMemo(() => {
-    if (ran) return spanish ? 'Ejecutando' : 'Running'
-    return spanish ? 'Listo para probar' : 'Ready to test'
-  }, [ran, spanish])
+  const status = spanish ? 'Ejecutando' : 'Running'
 
   const handleWorkspaceChange = (
     nextPython: string,
     nextJavascript: string,
     count: number,
-    nextPreview: MicrobitPreview,
   ) => {
     setPythonCode(nextPython)
     setJavascriptCode(nextJavascript)
     setBlockCount(count)
-    setPreview(nextPreview)
-    setRan(false)
   }
 
   const clear = () => {
@@ -193,15 +175,10 @@ export function MakerMicrobitLesson() {
     } else {
       setJavascriptCode('')
     }
-    setRan(false)
-    setSimulatedPreview('blank')
+    setRestartKey(key => key + 1)
   }
 
-  const run = () => {
-    const nextPreview = editorMode === 'blocks' ? preview : previewFromCode(simulatorCode)
-    setSimulatedPreview(nextPreview)
-    setRan(true)
-  }
+  const run = () => setRestartKey(key => key + 1)
 
   const copyCode = async () => {
     await navigator.clipboard?.writeText(activeCode)
@@ -210,6 +187,7 @@ export function MakerMicrobitLesson() {
   }
 
   const switchMode = (mode: EditorMode) => {
+    if (editorMode !== mode) setRestartKey(key => key + 1)
     setEditorMode(mode)
     if (mode === 'python') setCodeMode('python')
     if (mode === 'javascript') setCodeMode('javascript')
@@ -286,15 +264,16 @@ export function MakerMicrobitLesson() {
 
               <MicrobitBoard
                 moduleNumber={module.number}
-                preview={ran ? simulatedPreview : 'blank'}
                 code={simulatorCode}
-                running={ran}
+                codeLanguage={editorMode === 'javascript' ? 'javascript' : 'python'}
+                restartKey={restartKey}
+                onStateChange={setSimulation}
                 language={language}
               />
 
               <div className="mt-1 grid grid-cols-3 gap-2 sm:grid-cols-5">
                 <button type="button" onClick={run} disabled={!canRun} className="flex flex-col items-center gap-1 rounded-xl bg-[#ECFAFC] px-2 py-2.5 text-[11px] font-bold text-[#087D8B] disabled:opacity-40"><Play size={18} />{spanish ? 'Iniciar' : 'Start'}</button>
-                <button type="button" onClick={() => { setRan(false); setSimulatedPreview('blank') }} className="flex flex-col items-center gap-1 rounded-xl bg-[#ECFAFC] px-2 py-2.5 text-[11px] font-bold text-[#526873]"><RotateCcw size={18} />{spanish ? 'Reiniciar' : 'Reset'}</button>
+                <button type="button" onClick={run} className="flex flex-col items-center gap-1 rounded-xl bg-[#ECFAFC] px-2 py-2.5 text-[11px] font-bold text-[#526873]"><RotateCcw size={18} />{spanish ? 'Reiniciar' : 'Reset'}</button>
                 <button type="button" className="flex flex-col items-center gap-1 rounded-xl bg-[#ECFAFC] px-2 py-2.5 text-[11px] font-bold text-[#526873]"><Volume2 size={18} />{spanish ? 'Sonido' : 'Sound'}</button>
                 <button type="button" className="flex flex-col items-center gap-1 rounded-xl bg-[#ECFAFC] px-2 py-2.5 text-[11px] font-bold text-[#526873]"><Camera size={18} />{spanish ? 'Captura' : 'Capture'}</button>
                 <button type="button" className="flex flex-col items-center gap-1 rounded-xl bg-[#ECFAFC] px-2 py-2.5 text-[11px] font-bold text-[#526873]"><Maximize2 size={18} />{spanish ? 'Pantalla' : 'Full'}</button>
@@ -310,7 +289,7 @@ export function MakerMicrobitLesson() {
                     ['Botón B', spanish ? 'Sin presionar' : 'Released'],
                   ].map(([name, value], index) => (
                     <div key={name} className="rounded-lg border border-[#CDEEF2] bg-white px-2 py-2">
-                      <div className="flex items-center justify-center gap-1.5 text-[11px] font-black text-[#173644]"><span className={`h-2 w-2 rounded-full ${index === 1 && ran ? 'bg-[#087D8B]' : 'bg-[#B8CDD1]'}`} />{name}</div>
+                      <div className="flex items-center justify-center gap-1.5 text-[11px] font-black text-[#173644]"><span className={`h-2 w-2 rounded-full ${index < 2 && simulation.pins[index] ? 'bg-[#087D8B]' : 'bg-[#B8CDD1]'}`} />{name}</div>
                       <div className="mt-0.5 text-[10px] text-[#526873]">{value}</div>
                     </div>
                   ))}

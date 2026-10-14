@@ -1,12 +1,13 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { MicrobitPreview } from './MicrobitBlocklyWorkspace'
 import styles from '../screens/MakerMicrobitLesson.module.css'
 
 interface MicrobitBoardProps {
   moduleNumber: number
-  preview: MicrobitPreview
+  codeLanguage: 'python' | 'javascript'
+  restartKey: number
+  onStateChange?: (state: MicrobitSimulationState) => void
   code: string
-  running: boolean
   language: 'en' | 'id'
 }
 
@@ -28,51 +29,180 @@ const PATTERNS: Record<MicrobitPreview, number[]> = {
   blank: Array(25).fill(0),
 }
 
-function buttonPreview(code: string, button: 'a' | 'b'): MicrobitPreview | null {
-  const pythonMarker = `button_${button}.is_pressed()`
-  const jsMarker = `Button.${button.toUpperCase()}`
-  const index = Math.max(code.indexOf(pythonMarker), code.indexOf(jsMarker))
-  if (index === -1) return null
-  const section = code.slice(index, index + 360)
-  if (section.includes('HEART') || section.includes('Heart')) return 'heart'
-  if (section.includes('HAPPY') || section.includes('Happy')) return 'smile'
+export type MicrobitAction =
+  | { kind: 'display'; preview: MicrobitPreview }
+  | { kind: 'wait'; milliseconds: number }
+  | { kind: 'pin'; pin: 0 | 1 | 2; active: boolean }
+  | { kind: 'servo'; angle: number }
+
+type MicrobitNode = MicrobitAction | { kind: 'event'; button: 'a' | 'b' | null; body: MicrobitNode[] }
+export type MicrobitProgram = MicrobitNode[]
+export interface MicrobitSimulationState {
+  preview: MicrobitPreview
+  pins: [boolean, boolean, boolean]
+  servoAngle: number | null
+}
+
+export function initialMicrobitState(): MicrobitSimulationState {
+  return { preview: 'blank', pins: [false, false, false], servoAngle: null }
+}
+
+function actionFromStatement(statement: string): MicrobitAction | null {
+  let match = statement.match(/^(?:display\.show\(Image\.(HEART|HAPPY)\)|basic\.showIcon\(IconNames\.(Heart|Happy)\))$/)
+  if (match) return { kind: 'display', preview: (match[1] ?? match[2]).toLowerCase() === 'heart' ? 'heart' : 'smile' }
+  if (/^(?:display\.clear\(\)|basic\.clearScreen\(\))$/.test(statement)) return { kind: 'display', preview: 'blank' }
+  match = statement.match(/^(?:sleep|basic\.pause)\(\s*(\d+)\s*\)$/)
+  if (match) return { kind: 'wait', milliseconds: Math.min(Number(match[1]), 60000) }
+  match = statement.match(/^pin([012])\.write_digital\(\s*([01])\s*\)$/) ?? statement.match(/^pins\.digitalWritePin\(\s*DigitalPin\.P([012]),\s*([01])\s*\)$/)
+  if (match) return { kind: 'pin', pin: Number(match[1]) as 0 | 1 | 2, active: match[2] === '1' }
+  match = statement.match(/^pins\.servoWritePin\(\s*AnalogPin\.P1,\s*(\d+)\s*\)$/)
+  if (match) return { kind: 'servo', angle: Math.min(Number(match[1]), 180) }
+  match = statement.match(/^pin1\.write_analog\(\s*(\d+)\s*\)$/)
+  if (match) {
+    const duty = Number(match[1])
+    return { kind: 'servo', angle: duty <= 40 ? 0 : duty >= 110 ? 180 : 90 }
+  }
   return null
 }
 
-function getPinState(code: string, pin: number) {
-  const python = [...code.matchAll(new RegExp(`pin${pin}\\.write_digital\\((0|1)\\)`, 'g'))]
-  const js = [...code.matchAll(new RegExp(`DigitalPin\\.P${pin},\\s*(0|1)`, 'g'))]
-  const matches = [...python, ...js]
-  if (!matches.length) return false
-  return matches[matches.length - 1][1] === '1'
+// Tokenize only the supported simulator subset. Never evaluate user code.
+function codeTokens(code: string, python: boolean): string[] {
+  const tokens: string[] = []
+  let text = '', quote = '', escaped = false, lineComment = false, blockComment = false
+  for (let i = 0; i < code.length; i++) {
+    const char = code[i], next = code[i + 1]
+    if (lineComment) {
+      if (char === '\n') { lineComment = false; tokens.push(text); text = '' }
+      continue
+    }
+    if (blockComment) {
+      if (char === '*' && next === '/') { blockComment = false; i++ }
+      continue
+    }
+    if (quote) {
+      text += char
+      if (escaped) escaped = false
+      else if (char === '\\') escaped = true
+      else if (char === quote) quote = ''
+      continue
+    }
+    if (char === '"' || char === "'" || char === '`') { quote = char; text += char; continue }
+    if ((python && char === '#') || (!python && char === '/' && next === '/')) { lineComment = true; continue }
+    if (!python && char === '/' && next === '*') { blockComment = true; i++; continue }
+    if (char === '\n' || (!python && (char === ';' || char === '{' || char === '}'))) {
+      tokens.push(text); text = ''
+      if (char === '{' || char === '}') tokens.push(char)
+    } else text += char
+  }
+  tokens.push(text)
+  return tokens
 }
 
-function getServoAngle(code: string) {
-  const js = [...code.matchAll(/servoWritePin\([^,]+,\s*(\d+)\)/g)]
-  if (js.length) return Number(js[js.length - 1][1])
-  const python = [...code.matchAll(/pin1\.write_analog\((\d+)\)/g)]
-  if (!python.length) return null
-  const duty = Number(python[python.length - 1][1])
-  if (duty <= 40) return 0
-  if (duty >= 110) return 180
-  return 90
+export function parseMicrobitProgram(code: string, language: 'python' | 'javascript'): MicrobitProgram {
+  const root: MicrobitProgram = []
+  const stack: { indent: number; body: MicrobitNode[] }[] = [{ indent: -1, body: root }]
+  let header = ''
+  for (const token of codeTokens(code, language === 'python')) {
+    const statement = token.trim()
+    if (!statement) continue
+    if (language === 'python') {
+      const indent = token.match(/^\s*/)?.[0].replace(/\t/g, '    ').length ?? 0
+      while (stack.length > 1 && indent <= stack[stack.length - 1].indent) stack.pop()
+      if (statement.endsWith(':')) {
+        const match = statement.match(/^if\s+button_([ab])\.is_pressed\(\)\s*:/)
+        const node: MicrobitNode = { kind: 'event', button: match ? match[1] as 'a' | 'b' : null, body: [] }
+        stack[stack.length - 1].body.push(node)
+        stack.push({ indent, body: node.body })
+      } else {
+        const action = actionFromStatement(statement)
+        if (action) stack[stack.length - 1].body.push(action)
+      }
+    } else if (statement === '{') {
+      const match = header.match(/^if\s*\(\s*input\.buttonIsPressed\(Button\.([AB])\)\s*\)$/)
+      const node: MicrobitNode = { kind: 'event', button: match ? match[1].toLowerCase() as 'a' | 'b' : null, body: [] }
+      stack[stack.length - 1].body.push(node)
+      stack.push({ indent: 0, body: node.body })
+      header = ''
+    } else if (statement === '}') {
+      if (stack.length > 1) stack.pop()
+      header = ''
+    } else {
+      header = statement
+      const action = actionFromStatement(statement)
+      if (action) stack[stack.length - 1].body.push(action)
+    }
+  }
+  return root
 }
 
-export function MicrobitBoard({ moduleNumber, preview, code, running, language }: MicrobitBoardProps) {
+export function microbitActions(program: MicrobitProgram, button?: 'a' | 'b'): MicrobitAction[] {
+  const actions: MicrobitAction[] = []
+  const append = (nodes: MicrobitNode[], insideEvent: boolean) => {
+    for (const node of nodes) {
+      if (actions.length >= 200) return
+      if (node.kind === 'event') {
+        if (button && node.button === button) append(node.body, true)
+      } else if (button ? insideEvent : !insideEvent) actions.push(node)
+    }
+  }
+  append(program, false)
+  return actions
+}
+
+export function applyMicrobitAction(state: MicrobitSimulationState, action: MicrobitAction): MicrobitSimulationState {
+  if (action.kind === 'display') return { ...state, preview: action.preview }
+  if (action.kind === 'pin') {
+    const pins = [...state.pins] as MicrobitSimulationState['pins']
+    pins[action.pin] = action.active
+    return { ...state, pins }
+  }
+  if (action.kind === 'servo') return { ...state, servoAngle: action.angle, pins: [state.pins[0], true, state.pins[2]] }
+  return state
+}
+
+export function runMicrobitActions(actions: MicrobitAction[], apply: (action: MicrobitAction) => void): () => void {
+  let timer: ReturnType<typeof setTimeout> | null = null
+  let cancelled = false, index = 0
+  const advance = () => {
+    while (!cancelled && index < actions.length) {
+      const action = actions[index++]
+      if (action.kind === 'wait') { timer = setTimeout(advance, action.milliseconds); return }
+      apply(action)
+    }
+  }
+  advance()
+  return () => { cancelled = true; if (timer !== null) clearTimeout(timer) }
+}
+
+export function MicrobitBoard({ moduleNumber, code, codeLanguage, restartKey, onStateChange, language }: MicrobitBoardProps) {
   const spanish = language === 'id'
-  const [buttonOverride, setButtonOverride] = useState<MicrobitPreview | null>(null)
-  const shownPreview = running ? (buttonOverride ?? preview) : 'blank'
-  const ledPattern = useMemo(() => PATTERNS[shownPreview], [shownPreview])
-  const servoAngle = running ? getServoAngle(code) : null
-  const pin0 = running && getPinState(code, 0)
-  const pin1 = running && (getPinState(code, 1) || servoAngle !== null)
-  const pin2 = running && getPinState(code, 2)
+  const [simulation, setSimulation] = useState(initialMicrobitState)
+  const program = useMemo(() => parseMicrobitProgram(code, codeLanguage), [code, codeLanguage])
+  const cancelEvents = useRef<Partial<Record<'a' | 'b', () => void>>>({})
+  const apply = (action: MicrobitAction) => setSimulation(state => applyMicrobitAction(state, action))
 
+  useEffect(() => {
+    Object.values(cancelEvents.current).forEach(cancel => cancel?.())
+    cancelEvents.current = {}
+    setSimulation(initialMicrobitState())
+    const cancelBoot = runMicrobitActions(microbitActions(program), apply)
+    return () => {
+      cancelBoot()
+      Object.values(cancelEvents.current).forEach(cancel => cancel?.())
+      cancelEvents.current = {}
+    }
+  }, [program, moduleNumber, restartKey])
+
+  useEffect(() => { onStateChange?.(simulation) }, [simulation, onStateChange])
+
+  const ledPattern = PATTERNS[simulation.preview]
+  const servoAngle = simulation.servoAngle
+  const [pin0, pin1, pin2] = simulation.pins
   const pressButton = (button: 'a' | 'b') => {
-    if (!running) return
-    const next = buttonPreview(code, button)
-    if (next) setButtonOverride(next)
-    window.setTimeout(() => setButtonOverride(null), 900)
+    const actions = microbitActions(program, button)
+    if (!actions.length) return
+    cancelEvents.current[button]?.()
+    cancelEvents.current[button] = runMicrobitActions(actions, apply)
   }
 
   const pins = [
@@ -194,7 +324,7 @@ export function MicrobitBoard({ moduleNumber, preview, code, running, language }
         </>)}
       </div>
 
-      {moduleNumber === 6 && servoAngle !== null && running && (
+      {moduleNumber === 6 && servoAngle !== null && (
         <div className="mx-auto -mt-1 flex max-w-[260px] items-center justify-between rounded-full bg-[#ECFAFC] px-4 py-2 text-xs font-black text-[#173644]">
           <span>Servo P1</span>
           <span>{servoAngle}°</span>
