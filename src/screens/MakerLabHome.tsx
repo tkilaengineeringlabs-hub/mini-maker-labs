@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Cpu, Lightbulb, ToggleLeft, Cable, Gauge, RotateCcw, ChevronRight, FlaskConical, Play } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../i18n/LanguageProvider'
+import brandStyles from './PathSelector.module.css'
 
 const MODULES = [
   {
@@ -68,11 +69,14 @@ const MODULES = [
 ]
 
 const titleFont = {
-  fontFamily: "'Trebuchet MS', 'Arial Rounded MT Bold', 'Nunito', sans-serif",
+  fontFamily: "'MiniMakerHubPixel', monospace",
+  fontWeight: 400,
+  lineHeight: 1.35,
+  overflowWrap: 'anywhere' as const,
 }
 
 export function MakerLabHome() {
-  const { language } = useLanguage()
+  const { language, t } = useLanguage()
   const navigate = useNavigate()
   const [selected, setSelected] = useState(2)
   const spanish = language === 'id'
@@ -80,15 +84,18 @@ export function MakerLabHome() {
   const LessonIcon = lesson.icon
 
   return (
-    <div className="relative min-h-screen bg-[#F5F9FD] text-[#0F2F57] font-nunito">
+    <div className="relative min-h-screen bg-[#F7FCFD] text-[#173644] font-nunito">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        <section className="relative overflow-hidden rounded-3xl border border-blue-100 bg-white p-6 sm:p-10 mb-10 shadow-[0_10px_30px_rgba(15,47,87,0.04)]">
-          <div className="pointer-events-none absolute -top-24 -right-20 w-72 h-72 rounded-full bg-blue-50" />
+        <section className="relative overflow-hidden rounded-3xl border border-[#CDEEF2] bg-white p-6 sm:p-10 mb-10 shadow-[0_10px_30px_rgba(8,125,139,0.04)]">
+          <div className="pointer-events-none absolute -top-24 -right-20 w-72 h-72 rounded-full bg-[#ECFAFC]" />
           <div className="relative z-10 max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 mb-5">
-              <FlaskConical size={14} /> MAKER LAB
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#CDEEF2] bg-[#ECFAFC] px-3 py-1 text-xs font-bold text-[#087D8B] mb-5">
+              <FlaskConical size={14} />
+              <span>{t('path.blocks.name').split(' ').slice(0, -1).join(' ')}{' '}
+                <span className={brandStyles.signature}>{t('path.blocks.name').split(' ').slice(-1).join(' ')}</span>
+              </span>
             </div>
-            <h1 style={titleFont} className="text-3xl sm:text-5xl font-black tracking-tight mb-4">
+            <h1 style={titleFont} className="text-2xl sm:text-4xl tracking-tight text-[#087D8B] mb-4">
               {spanish ? 'Construye. Programa. Hazlo real.' : 'Build. Code. Make it real.'}
             </h1>
             <p className="text-slate-600 text-lg leading-relaxed max-w-2xl">
@@ -103,15 +110,15 @@ export function MakerLabHome() {
           <section>
             <div className="flex flex-wrap items-end justify-between gap-4 mb-5">
               <div>
-                <p className="text-blue-700 text-xs font-black uppercase tracking-[.18em] mb-2">
+                <p className="text-[#087D8B] text-xs font-black uppercase tracking-[.18em] mb-2">
                   {spanish ? 'Ruta 01' : 'Path 01'}
                 </p>
-                <h2 style={titleFont} className="text-3xl font-black">micro:bit</h2>
-                <p className="text-slate-500 mt-1">
+                <h2 style={titleFont} className="text-2xl text-[#087D8B]">micro:bit</h2>
+                <p className="text-slate-600 mt-1">
                   {spanish ? '6 módulos · De cero a tu primer mecanismo' : '6 modules · From zero to your first mechanism'}
                 </p>
               </div>
-              <span className="rounded-xl bg-blue-50 border border-blue-100 px-3 py-2 text-blue-700 text-xs font-bold">
+              <span className="rounded-xl bg-[#ECFAFC] border border-[#CDEEF2] px-3 py-2 text-[#087D8B] text-xs font-bold">
                 {spanish ? 'DISPONIBLE' : 'AVAILABLE'}
               </span>
             </div>
@@ -127,48 +134,48 @@ export function MakerLabHome() {
                     onClick={() => setSelected(module.number)}
                     aria-pressed={active}
                     whileHover={{ x: 3 }}
-                    className={`w-full text-left rounded-2xl border p-4 shadow-[0_4px_16px_rgba(15,47,87,0.03)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 transition-colors flex items-center gap-4 ${active ? 'border-blue-400 bg-blue-50' : 'border-blue-100 bg-white hover:border-blue-300 hover:bg-blue-50/50'}`}
+                    className={`w-full text-left rounded-2xl border p-4 shadow-[0_4px_16px_rgba(8,125,139,0.03)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#087D8B] transition-colors flex items-center gap-4 ${active ? 'border-[#10AEC2] bg-[#ECFAFC]' : 'border-[#CDEEF2] bg-white hover:border-[#10AEC2] hover:bg-[#ECFAFC]/50'}`}
                   >
-                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${active ? 'bg-[#0F2F57] text-white' : 'bg-blue-50 text-blue-700'}`}>
+                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${active ? 'bg-[#087D8B] text-white' : 'bg-[#ECFAFC] text-[#087D8B]'}`}>
                       <Icon size={21} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="text-xs text-slate-500 font-bold mb-1">{spanish ? 'MÓDULO' : 'MODULE'} {module.number}</div>
+                      <div className="text-xs text-slate-600 font-bold mb-1">{spanish ? 'MÓDULO' : 'MODULE'} {module.number}</div>
                       <div className="font-extrabold text-lg">{spanish ? module.titleEs : module.titleEn}</div>
                     </div>
-                    <ChevronRight size={18} className={active ? 'text-blue-700' : 'text-slate-400'} />
+                    <ChevronRight size={18} className={active ? 'text-[#087D8B]' : 'text-slate-400'} />
                   </motion.button>
                 )
               })}
             </div>
           </section>
 
-          <aside className="lg:sticky lg:top-24 rounded-3xl border border-blue-100 bg-white p-6 sm:p-7 shadow-[0_10px_30px_rgba(15,47,87,0.06)]">
-            <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-700 mb-5">
+          <aside className="lg:sticky lg:top-24 rounded-3xl border border-[#CDEEF2] bg-white p-6 sm:p-7 shadow-[0_10px_30px_rgba(8,125,139,0.05)]">
+            <div className="w-14 h-14 rounded-2xl bg-[#ECFAFC] border border-[#CDEEF2] flex items-center justify-center text-[#087D8B] mb-5">
               <LessonIcon size={28} />
             </div>
-            <div className="text-xs text-blue-700 font-black tracking-[.16em] mb-2">
+            <div className="text-xs text-[#087D8B] font-black tracking-[.16em] mb-2">
               {spanish ? 'MÓDULO' : 'MODULE'} {lesson.number}
             </div>
-            <h3 style={titleFont} className="text-2xl font-black mb-3">{spanish ? lesson.titleEs : lesson.titleEn}</h3>
+            <h3 style={titleFont} className="text-xl text-[#173644] mb-3">{spanish ? lesson.titleEs : lesson.titleEn}</h3>
             <p className="text-slate-600 leading-relaxed mb-6">{spanish ? lesson.descEs : lesson.descEn}</p>
 
-            <div className="rounded-2xl border border-blue-100 bg-blue-50/60 p-4 mb-5">
-              <div className="text-xs uppercase tracking-wider text-slate-500 font-bold mb-2">
+            <div className="rounded-2xl border border-[#CDEEF2] bg-[#ECFAFC]/60 p-4 mb-5">
+              <div className="text-xs uppercase tracking-wider text-slate-600 font-bold mb-2">
                 {spanish ? 'Objetivo' : 'Goal'}
               </div>
-              <div className="font-bold text-[#0F2F57]">{spanish ? lesson.goalEs : lesson.goalEn}</div>
+              <div className="font-bold text-[#173644]">{spanish ? lesson.goalEs : lesson.goalEn}</div>
             </div>
 
             <button
               onClick={() => navigate(`/app/blocks/microbit/${lesson.number}`)}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-[#0F2F57] hover:bg-[#174477] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-500 transition-colors px-5 py-4 text-white font-black mb-4"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-[#087D8B] hover:bg-[#076B78] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#087D8B] transition-colors px-5 py-4 text-white font-black mb-4"
             >
               <Play size={18} fill="currentColor" />
               {spanish ? 'Abrir módulo' : 'Open module'}
             </button>
 
-            <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-slate-600">
+            <div className="rounded-2xl border border-[#CDEEF2] bg-[#ECFAFC] p-4 text-sm leading-6 text-slate-600">
               {spanish
                 ? 'Ya incluye editor visual, generación de MicroPython y simulador de matriz LED. La conexión USB con hardware real será la siguiente fase.'
                 : 'It now includes a visual editor, MicroPython generation and an LED-matrix simulator. Real USB hardware connection comes next.'}
@@ -176,10 +183,10 @@ export function MakerLabHome() {
           </aside>
         </div>
 
-        <section className="mt-10 rounded-3xl border border-blue-100 bg-white shadow-[0_4px_16px_rgba(15,47,87,0.03)] p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-5 justify-between">
+        <section className="mt-10 rounded-3xl border border-[#CDEEF2] bg-white shadow-[0_4px_16px_rgba(8,125,139,0.03)] p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-5 justify-between">
           <div>
-            <div style={titleFont} className="font-black text-xl mb-1">{spanish ? 'Retos de lógica con bloques' : 'Block logic challenges'}</div>
-            <p className="text-slate-500 max-w-2xl">
+            <div style={titleFont} className="text-lg text-[#173644] mb-1">{spanish ? 'Retos de lógica con bloques' : 'Block logic challenges'}</div>
+            <p className="text-slate-600 max-w-2xl">
               {spanish
                 ? 'El simulador original sigue disponible como zona de práctica mientras construimos las rutas de hardware.'
                 : 'The original simulator remains available as a practice zone while we build the hardware paths.'}
@@ -187,7 +194,7 @@ export function MakerLabHome() {
           </div>
           <button
             onClick={() => navigate('/app/blocks/world/jungle')}
-            className="shrink-0 rounded-xl bg-[#0F2F57] text-white hover:bg-[#174477] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-500 transition-colors px-5 py-3 font-extrabold"
+            className="shrink-0 rounded-xl bg-[#087D8B] text-white hover:bg-[#076B78] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#087D8B] transition-colors px-5 py-3 font-extrabold"
           >
             {spanish ? 'Practicar lógica' : 'Practice logic'}
           </button>
