@@ -228,11 +228,11 @@ export default function App({ isHydrating }: AppProps) {
       <LanguageUrlSync />
       <Routes>
         <Route path="/" element={<LandingRoute />} />
+        <Route path="/app/blocks/microbit/:moduleNumber" element={<MakerMicrobitLesson />} />
         <Route path="/app" element={<GameLayout />}>
           <Route index element={<PathSelectorRoute />} />
           <Route path="blocks">
             <Route index element={<WorldMapRoute />} />
-            <Route path="microbit/:moduleNumber" element={<MakerMicrobitLesson />} />
             <Route path="world/:worldId" element={<WorldDetailRoute />} />
             <Route path="world/:worldId/:lessonNumber" element={<LessonRoute />} />
           </Route>
