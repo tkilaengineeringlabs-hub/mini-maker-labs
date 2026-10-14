@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import * as Blockly from 'blockly'
+import styles from '../screens/MakerMicrobitLesson.module.css'
 
 export type MicrobitPreview = 'heart' | 'smile' | 'blank'
 
@@ -18,16 +19,16 @@ const THEME = Blockly.Theme.defineTheme('miniMakerMicrobit', {
   name: 'miniMakerMicrobit',
   base: Blockly.Themes.Zelos,
   componentStyles: {
-    workspaceBackgroundColour: '#f8fbff',
+    workspaceBackgroundColour: '#ffffff',
     toolboxBackgroundColour: '#ffffff',
-    toolboxForegroundColour: '#17305f',
-    flyoutBackgroundColour: '#f5f8ff',
-    flyoutForegroundColour: '#17305f',
+    toolboxForegroundColour: '#173644',
+    flyoutBackgroundColour: '#ecfafc',
+    flyoutForegroundColour: '#173644',
     flyoutOpacity: 1,
-    scrollbarColour: '#b9c9e8',
-    insertionMarkerColour: '#2563eb',
+    scrollbarColour: '#a3d9e0',
+    insertionMarkerColour: '#087d8b',
     insertionMarkerOpacity: 0.45,
-    cursorColour: '#2563eb',
+    cursorColour: '#087d8b',
   },
 })
 
@@ -42,7 +43,7 @@ function registerBlocks(spanish: boolean) {
         ]), 'ICON')
       this.setPreviousStatement(true)
       this.setNextStatement(true)
-      this.setColour('#7c3aed')
+      this.setColour('#087d8b')
     },
   }
 
@@ -53,7 +54,7 @@ function registerBlocks(spanish: boolean) {
         .appendField(new Blockly.FieldTextInput(spanish ? 'HOLA' : 'HELLO'), 'TEXT')
       this.setPreviousStatement(true)
       this.setNextStatement(true)
-      this.setColour('#7c3aed')
+      this.setColour('#087d8b')
     },
   }
 
@@ -62,7 +63,7 @@ function registerBlocks(spanish: boolean) {
       this.appendDummyInput().appendField(spanish ? 'limpiar pantalla' : 'clear display')
       this.setPreviousStatement(true)
       this.setNextStatement(true)
-      this.setColour('#7c3aed')
+      this.setColour('#087d8b')
     },
   }
 
@@ -74,7 +75,7 @@ function registerBlocks(spanish: boolean) {
         .appendField('ms')
       this.setPreviousStatement(true)
       this.setNextStatement(true)
-      this.setColour('#64748b')
+      this.setColour('#526873')
     },
   }
 
@@ -87,7 +88,7 @@ function registerBlocks(spanish: boolean) {
       this.appendStatementInput('DO').appendField(spanish ? 'hacer' : 'do')
       this.setPreviousStatement(true)
       this.setNextStatement(true)
-      this.setColour('#d946ef')
+      this.setColour('#176b79')
     },
   }
 
@@ -100,7 +101,7 @@ function registerBlocks(spanish: boolean) {
         .appendField(new Blockly.FieldDropdown([['1', '1'], ['0', '0']]), 'VALUE')
       this.setPreviousStatement(true)
       this.setNextStatement(true)
-      this.setColour('#ef4444')
+      this.setColour('#173644')
     },
   }
 
@@ -109,7 +110,7 @@ function registerBlocks(spanish: boolean) {
       this.appendDummyInput().appendField(spanish ? 'mostrar temperatura' : 'show temperature')
       this.setPreviousStatement(true)
       this.setNextStatement(true)
-      this.setColour('#14b8a6')
+      this.setColour('#08766f')
     },
   }
 
@@ -118,7 +119,7 @@ function registerBlocks(spanish: boolean) {
       this.appendDummyInput().appendField(spanish ? 'mostrar nivel de luz' : 'show light level')
       this.setPreviousStatement(true)
       this.setNextStatement(true)
-      this.setColour('#14b8a6')
+      this.setColour('#08766f')
     },
   }
 
@@ -127,7 +128,7 @@ function registerBlocks(spanish: boolean) {
       this.appendDummyInput().appendField(spanish ? 'mostrar aceleración X' : 'show X acceleration')
       this.setPreviousStatement(true)
       this.setNextStatement(true)
-      this.setColour('#14b8a6')
+      this.setColour('#08766f')
     },
   }
 
@@ -138,7 +139,7 @@ function registerBlocks(spanish: boolean) {
         .appendField(new Blockly.FieldDropdown([['0°', '0'], ['90°', '90'], ['180°', '180']]), 'ANGLE')
       this.setPreviousStatement(true)
       this.setNextStatement(true)
-      this.setColour('#16a34a')
+      this.setColour('#24585e')
     },
   }
 }
@@ -161,21 +162,21 @@ function toolboxForModule(moduleNumber: number, spanish: boolean) {
 
   const contents: object[] = []
   if (moduleNumber <= 2) {
-    contents.push({ kind: 'category', name: spanish ? 'Básico' : 'Basic', colour: '#2563eb', contents: display })
-    contents.push({ kind: 'category', name: spanish ? 'Tiempo' : 'Time', colour: '#64748b', contents: utility })
+    contents.push({ kind: 'category', name: spanish ? 'Básico' : 'Basic', colour: '#087d8b', contents: display })
+    contents.push({ kind: 'category', name: spanish ? 'Tiempo' : 'Time', colour: '#526873', contents: utility })
   } else if (moduleNumber === 3) {
-    contents.push({ kind: 'category', name: spanish ? 'Entrada' : 'Input', colour: '#d946ef', contents: events })
-    contents.push({ kind: 'category', name: 'LED', colour: '#7c3aed', contents: display })
-    contents.push({ kind: 'category', name: spanish ? 'Tiempo' : 'Time', colour: '#64748b', contents: utility })
+    contents.push({ kind: 'category', name: spanish ? 'Entrada' : 'Input', colour: '#176b79', contents: events })
+    contents.push({ kind: 'category', name: 'LED', colour: '#087d8b', contents: display })
+    contents.push({ kind: 'category', name: spanish ? 'Tiempo' : 'Time', colour: '#526873', contents: utility })
   } else if (moduleNumber === 4) {
-    contents.push({ kind: 'category', name: spanish ? 'Pines' : 'Pins', colour: '#ef4444', contents: pins })
-    contents.push({ kind: 'category', name: spanish ? 'Tiempo' : 'Time', colour: '#64748b', contents: utility })
+    contents.push({ kind: 'category', name: spanish ? 'Pines' : 'Pins', colour: '#173644', contents: pins })
+    contents.push({ kind: 'category', name: spanish ? 'Tiempo' : 'Time', colour: '#526873', contents: utility })
   } else if (moduleNumber === 5) {
-    contents.push({ kind: 'category', name: spanish ? 'Sensores' : 'Sensors', colour: '#14b8a6', contents: sensors })
-    contents.push({ kind: 'category', name: 'LED', colour: '#7c3aed', contents: display })
+    contents.push({ kind: 'category', name: spanish ? 'Sensores' : 'Sensors', colour: '#08766f', contents: sensors })
+    contents.push({ kind: 'category', name: 'LED', colour: '#087d8b', contents: display })
   } else {
-    contents.push({ kind: 'category', name: 'Servo', colour: '#16a34a', contents: servo })
-    contents.push({ kind: 'category', name: spanish ? 'Tiempo' : 'Time', colour: '#64748b', contents: utility })
+    contents.push({ kind: 'category', name: 'Servo', colour: '#24585e', contents: servo })
+    contents.push({ kind: 'category', name: spanish ? 'Tiempo' : 'Time', colour: '#526873', contents: utility })
   }
 
   return { kind: 'categoryToolbox', contents }
@@ -333,7 +334,7 @@ export const MicrobitBlocklyWorkspace = forwardRef<MicrobitBlocklyHandle, Microb
         renderer: 'zelos',
         trashcan: true,
         scrollbars: true,
-        grid: { spacing: 24, length: 3, colour: '#d8e3f5', snap: true },
+        grid: { spacing: 24, length: 3, colour: '#cdeef2', snap: true },
         zoom: { controls: true, wheel: true, startScale: 0.9, minScale: 0.45, maxScale: 1.6, scaleSpeed: 1.15 },
         move: { scrollbars: true, drag: true, wheel: false },
       })
@@ -362,6 +363,6 @@ export const MicrobitBlocklyWorkspace = forwardRef<MicrobitBlocklyHandle, Microb
       }
     }, [moduleNumber, language])
 
-    return <div ref={hostRef} className="w-full h-[560px] overflow-hidden" />
+    return <div ref={hostRef} className={`${styles.workspace} w-full h-[560px] overflow-hidden`} />
   },
 )

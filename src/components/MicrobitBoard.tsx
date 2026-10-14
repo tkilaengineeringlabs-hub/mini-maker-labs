@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react'
 import type { MicrobitPreview } from './MicrobitBlocklyWorkspace'
+import styles from '../screens/MakerMicrobitLesson.module.css'
 
 interface MicrobitBoardProps {
+  moduleNumber: number
   preview: MicrobitPreview
   code: string
   running: boolean
@@ -56,7 +58,7 @@ function getServoAngle(code: string) {
   return 90
 }
 
-export function MicrobitBoard({ preview, code, running, language }: MicrobitBoardProps) {
+export function MicrobitBoard({ moduleNumber, preview, code, running, language }: MicrobitBoardProps) {
   const spanish = language === 'id'
   const [buttonOverride, setButtonOverride] = useState<MicrobitPreview | null>(null)
   const shownPreview = running ? (buttonOverride ?? preview) : 'blank'
@@ -84,8 +86,8 @@ export function MicrobitBoard({ preview, code, running, language }: MicrobitBoar
   const armRotation = servoAngle === null ? -25 : servoAngle - 90
 
   return (
-    <div className="w-full">
-      <div className="relative mx-auto h-[470px] w-full max-w-[390px] select-none">
+    <div className={`${styles.hardware} w-full`}>
+      <div className={`${styles.hardwareScene} relative mx-auto w-full max-w-[390px] select-none ${moduleNumber === 6 ? 'h-[470px]' : 'h-[290px]'}`}>
         <div className="absolute left-1/2 top-2 h-[265px] w-[310px] -translate-x-1/2 overflow-hidden rounded-[28px] bg-[#111214] shadow-[0_22px_45px_rgba(26,45,83,.22)]">
           <div className="absolute left-0 top-0 h-20 w-20 bg-[#ffd63d] [clip-path:polygon(0_0,100%_0,0_100%)]" />
           <div className="absolute left-[54px] top-0 h-14 w-14 bg-[#ffd63d] [clip-path:polygon(0_0,55%_0,0_55%)]" />
@@ -147,29 +149,31 @@ export function MicrobitBoard({ preview, code, running, language }: MicrobitBoar
           </div>
         </div>
 
-        <svg className="absolute left-1/2 top-[254px] h-[168px] w-[280px] -translate-x-1/2 overflow-visible" viewBox="0 0 280 168" aria-hidden="true">
-          <path d="M88 0 C88 42 106 48 118 82" fill="none" stroke="#8d5aa5" strokeWidth="5" strokeLinecap="round" />
-          <path d="M151 0 C151 40 133 49 131 82" fill="none" stroke="#ff5b43" strokeWidth="5" strokeLinecap="round" />
-          <path d="M207 0 C207 38 163 46 143 82" fill="none" stroke="#19a9df" strokeWidth="5" strokeLinecap="round" />
-          <rect x="113" y="68" width="38" height="17" rx="4" fill="#24262a" />
-          <rect x="119" y="82" width="26" height="17" rx="3" fill="#141518" />
-        </svg>
+        {moduleNumber === 6 && (<>
+          <svg className="absolute left-1/2 top-[254px] h-[168px] w-[280px] -translate-x-1/2 overflow-visible" viewBox="0 0 280 168" aria-hidden="true">
+            <path d="M88 0 C88 42 106 48 118 82" fill="none" stroke="#087D8B" strokeWidth="5" strokeLinecap="round" />
+            <path d="M151 0 C151 40 133 49 131 82" fill="none" stroke="#ff5b43" strokeWidth="5" strokeLinecap="round" />
+            <path d="M207 0 C207 38 163 46 143 82" fill="none" stroke="#10AEC2" strokeWidth="5" strokeLinecap="round" />
+            <rect x="113" y="68" width="38" height="17" rx="4" fill="#24262a" />
+            <rect x="119" y="82" width="26" height="17" rx="3" fill="#141518" />
+          </svg>
 
-        <div className="absolute left-1/2 top-[337px] h-[112px] w-[96px] -translate-x-1/2 rounded-t-[4px] rounded-b-[10px] bg-[#0d76ff] shadow-[0_16px_24px_rgba(20,87,186,.18)]">
-          <div className="absolute left-1/2 top-2 h-3 w-3 -translate-x-1/2 rounded-full bg-[#2357a6]" />
-          <div className="absolute left-1/2 top-[33px] h-[70px] w-[60px] -translate-x-1/2 rounded-[50%] bg-[#095bdd]" />
-          <div className="absolute left-1/2 top-[43px] h-7 w-7 -translate-x-1/2 rounded-full bg-[#174899]" />
-          <div
-            className="absolute left-1/2 top-[54px] h-4 w-[86px] origin-[12px_50%] rounded-full border border-[#aeb4bc] bg-[#eef0f3] shadow-sm transition-transform duration-500"
-            style={{ transform: `translateX(-12px) rotate(${armRotation}deg)` }}
-          >
-            <span className="absolute left-2 top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-[#88909a]" />
+          <div className="absolute left-1/2 top-[337px] h-[112px] w-[96px] -translate-x-1/2 rounded-t-[4px] rounded-b-[10px] bg-[#10AEC2] shadow-[0_16px_24px_rgba(8,125,139,.12)]">
+            <div className="absolute left-1/2 top-2 h-3 w-3 -translate-x-1/2 rounded-full bg-[#087D8B]" />
+            <div className="absolute left-1/2 top-[33px] h-[70px] w-[60px] -translate-x-1/2 rounded-[50%] bg-[#087D8B]" />
+            <div className="absolute left-1/2 top-[43px] h-7 w-7 -translate-x-1/2 rounded-full bg-[#173644]" />
+            <div
+              className="absolute left-1/2 top-[54px] h-4 w-[86px] origin-[12px_50%] rounded-full border border-[#aeb4bc] bg-[#eef0f3] shadow-sm transition-transform duration-500"
+              style={{ transform: `translateX(-12px) rotate(${armRotation}deg)` }}
+            >
+              <span className="absolute left-2 top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-[#88909a]" />
+            </div>
           </div>
-        </div>
+        </>)}
       </div>
 
-      {servoAngle !== null && running && (
-        <div className="mx-auto -mt-1 flex max-w-[260px] items-center justify-between rounded-full bg-[#eef4ff] px-4 py-2 text-xs font-black text-[#345786]">
+      {moduleNumber === 6 && servoAngle !== null && running && (
+        <div className="mx-auto -mt-1 flex max-w-[260px] items-center justify-between rounded-full bg-[#ECFAFC] px-4 py-2 text-xs font-black text-[#173644]">
           <span>Servo P1</span>
           <span>{servoAngle}°</span>
         </div>

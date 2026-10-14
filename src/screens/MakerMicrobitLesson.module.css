@@ -1,0 +1,71 @@
+@font-face {
+  font-family: 'MiniMakerIdePixel';
+  src: url('../assets/landing/Silkscreen-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MiniMakerIdeHand';
+  src: url('../assets/landing/Caveat.ttf') format('truetype');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.ide {
+  font-family: 'Nunito', system-ui, sans-serif;
+}
+
+.ide button {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.ide button:focus-visible {
+  outline: 2px solid #087d8b;
+  outline-offset: 2px;
+}
+
+.signature {
+  font-family: 'MiniMakerIdeHand', cursive;
+  font-size: 1.5em;
+  font-weight: 500;
+  color: #172c38;
+}
+
+/* Blockly's shared defaults use !important; override only this IDE host. */
+.workspace :global(.blocklyMainBackground) {
+  fill: #ffffff !important;
+}
+
+.workspace :global(.blocklyFlyoutBackground) {
+  fill: #ecfafc !important;
+}
+
+.workspace :global(.blocklyToolboxDiv) {
+  border-right: 1px solid #cdeef2 !important;
+}
+
+.workspace :global(.blocklyToolboxCategoryLabel) {
+  font-family: 'MiniMakerIdePixel', monospace;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.workspace :global(.blocklyToolboxCategory) {
+  min-height: 44px;
+}
+
+.hardware {
+  container-type: inline-size;
+}
+
+@container (max-width: 310px) {
+  .hardwareScene {
+    transform: scale(0.84);
+    transform-origin: center top;
+    margin-bottom: -46px;
+  }
+}
